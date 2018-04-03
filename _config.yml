@@ -62,7 +62,7 @@ page-img: "/img/bgimage.png"
 
 # Change all these values or delete the ones you don't want.
 # Important: you must keep the "name" parameter, everything else you can remove
-author: Avnit Bambah
+author:
   name: Technology and Finance Blogs
 
 # Select your active Social Network Links.
