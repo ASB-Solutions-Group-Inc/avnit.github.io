@@ -1,0 +1,13 @@
+Blockchain is an elegantly distributed cryptographic solution for the transformation of record keeping across any industry. Blockchain satisfies two very important needs that help industries stay ahead of the game. First is the need for innovation and second is the need for governance. In addition, Blockchain technologies help in lowering the cost, increasing the speed and empowering their people.
+
+This is unique and so important because very few other technologies can fill these needs. It increases trust, durability, and security. In the arena of BIG data, where the exchange of data is incredibly and increasingly frequent, the need for governance is becoming extremely prevalent.
+
+
+
+Blockchain was originally pioneered by finance, which is why so many people equate it with Bitcoin. However, we have already seen applications of blockchain that stem beyond just finance. The reason we have not seen blockchain take hold is because it is incredibly complex and disruptive.
+
+
+
+Value proposition for Blockchain in industries are also critical. In certain industries, Blockchain is able to reduce costs, decrease time to market, and increase accuracy. I have gathered this information through research and conducting interviews from industry leaders. The individuals I interviewed are involved in financial services, manufacturing, cellular services, trading, and the pharmaceutical industry.
+
+ The evidence gathered from my conversations were used to develop various business cases .The project that was selected out of these business cases was to build a proof of concept of blockchain engine for healthcare industry. The engine that was selected for this implementation was openchain. There were coding changes done to the openchain engine to create a new wallet, which was used for transacting and validating the identification of the customer. The central server kept all the records and was implemented on the Google cloud platform. The final POC product was made to provide a digit record of every customer at a medical office so they can go to any pharmacy and retrieve medications by scanning the wallet. In addition, the customers complete medical record would be stored on the blockchain transaction, which can be accessed by any physician, given the consumers consent.
