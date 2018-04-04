@@ -1,134 +1,39 @@
 
-#  Beta Calculator 
+#  Beta Calculator
 ## Author : Avnit Bambah
 ### Date : 03/12/2018
-###### Learning ML with python 3 on Pluralsights.
-###### Predicting stock beta 
+###### Learning ML with python 3 on Pluralsight.
+###### Predicting stock beta
 
 
 ```python
 import pandas as pd
 import matplotlib as plt
-import numpy as np 
+import numpy as np
+from pandas_datareader import data
+import googlefinance
+import matplotlib.pyplot as plt
 
-# do ploting inline instead of seperate windows 
+# do ploting inline instead of seperate windows
 %matplotlib inline
 ```
 
 
 ```python
-# add new stocks to the csv file 
+# add new stocks to the csv file
 df = pd.read_csv("./holdings-xlk.csv")
-df.shape
-
 ```
 
 
-
-
-    (20, 2)
-
-
-
-
 ```python
-# check if there are any stocks in the csv file 
-df.head(10)
-```
-
-
-
-
-<div>
-<style>
-    .dataframe thead tr:only-child th {
-        text-align: right;
-    }
-
-    .dataframe thead th {
-        text-align: left;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>Symbol</th>
-      <th>Company Name</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>ANRI</td>
-      <td>Amira Nature Food Ltd</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>BETR</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>BUFF</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>CALM</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>CENT</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>5</th>
-      <td>DTEA</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>6</th>
-      <td>FRPT</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>7</th>
-      <td>KHC</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>8</th>
-      <td>LANC</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>9</th>
-      <td>LWAY</td>
-      <td>NaN</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-
-
-
-```python
-# Define the instruments to download. We would like to see Apple, Microsoft and the S&P500 index in addition to the one in the csv file 
+# Define the instruments to download. We would like to see Apple, Microsoft and the S&P500 index in addition to the one in the csv file
 tickers = ['AAPL', 'MSFT', 'SPY','CME','GOOG','VVI','agg']
-# get the symbols and add them to the list 
+# get the symbols and add them to the list
 symbols = df.iloc[:,[0]]
 array = symbols.values.tolist()
 for i in range(1 , len(array)):
     tickers.append(str(array[i]).replace('[\'', '').replace('\']',''))
-    
-tickers 
+tickers
 ```
 
 
@@ -165,13 +70,6 @@ tickers
 
 
 ```python
-import googlefinance
-```
-
-
-```python
-from pandas_datareader import data
-import pandas as pd
 
 # Define which online source one should use
 data_source = 'yahoo'
@@ -193,13 +91,327 @@ close = panel_data.loc['Adj Close']
 
 close.dropna(axis=0, how='any')
 
-# Getting all weekdays between start date and end date 
+# Getting all weekdays between start date and end date
 all_weekdays = pd.date_range(start=start_date, end=end_date, freq='B')
 
 # How do we align the existing prices in adj_close with our new set of dates?
 # All we need to do is reindex close using all_weekdays as the new index
 close = close.reindex(all_weekdays)
 
+close_onedayold = close.shift(-1)
+close_onedayold.head(10)
+
+close_final = ((close / close_onedayold) -1) * 100
+
+```
+
+    /Users/avnitbambah/anaconda3/lib/python3.6/site-packages/pandas_datareader/yahoo/daily.py:136: SymbolWarning: Failed to read symbol: 'NUTR', replacing with NaN.
+      warnings.warn(msg.format(sym), SymbolWarning)
+    /Users/avnitbambah/anaconda3/lib/python3.6/site-packages/pandas_datareader/yahoo/daily.py:136: SymbolWarning: Failed to read symbol: 'TOF', replacing with NaN.
+      warnings.warn(msg.format(sym), SymbolWarning)
+    /Users/avnitbambah/anaconda3/lib/python3.6/site-packages/pandas_datareader/yahoo/daily.py:136: SymbolWarning: Failed to read symbol: 'WWAV', replacing with NaN.
+      warnings.warn(msg.format(sym), SymbolWarning)
+
+
+
+```python
+close_onedayold.head(10)
+```
+
+
+
+
+<div>
+<style>
+    .dataframe thead tr:only-child th {
+        text-align: right;
+    }
+
+    .dataframe thead th {
+        text-align: left;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>AAPL</th>
+      <th>BETR</th>
+      <th>BUFF</th>
+      <th>CALM</th>
+      <th>CENT</th>
+      <th>CME</th>
+      <th>DTEA</th>
+      <th>FRPT</th>
+      <th>GOOG</th>
+      <th>KHC</th>
+      <th>...</th>
+      <th>PPC</th>
+      <th>RELV</th>
+      <th>RIBT</th>
+      <th>SAFM</th>
+      <th>SPY</th>
+      <th>TOF</th>
+      <th>VVI</th>
+      <th>WILC</th>
+      <th>WWAV</th>
+      <th>agg</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2000-01-03</th>
+      <td>2.478144</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.604914</td>
+      <td>3.286890</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>...</td>
+      <td>5.446455</td>
+      <td>4.250875</td>
+      <td>NaN</td>
+      <td>4.003366</td>
+      <td>99.349930</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>2000-01-04</th>
+      <td>2.514410</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.604914</td>
+      <td>3.265820</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>...</td>
+      <td>5.504705</td>
+      <td>4.000824</td>
+      <td>NaN</td>
+      <td>4.367311</td>
+      <td>99.527641</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>2000-01-05</th>
+      <td>2.296816</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.626911</td>
+      <td>3.286890</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>...</td>
+      <td>5.825084</td>
+      <td>4.000824</td>
+      <td>NaN</td>
+      <td>4.124682</td>
+      <td>97.928093</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>2000-01-06</th>
+      <td>2.405613</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.626911</td>
+      <td>3.286890</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>...</td>
+      <td>5.970712</td>
+      <td>3.875598</td>
+      <td>NaN</td>
+      <td>4.245998</td>
+      <td>103.615379</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>2000-01-07</th>
+      <td>2.363304</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.626911</td>
+      <td>3.202610</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>...</td>
+      <td>5.504705</td>
+      <td>3.875598</td>
+      <td>NaN</td>
+      <td>4.124682</td>
+      <td>103.970871</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>2000-01-10</th>
+      <td>2.242418</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.615912</td>
+      <td>3.244750</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>...</td>
+      <td>5.533829</td>
+      <td>4.250875</td>
+      <td>NaN</td>
+      <td>4.245998</td>
+      <td>102.726746</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>2000-01-11</th>
+      <td>2.107934</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.615912</td>
+      <td>3.329029</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>...</td>
+      <td>5.533829</td>
+      <td>5.251082</td>
+      <td>NaN</td>
+      <td>3.912383</td>
+      <td>101.704826</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>2000-01-12</th>
+      <td>2.339126</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.615912</td>
+      <td>3.329029</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>...</td>
+      <td>5.970712</td>
+      <td>5.001029</td>
+      <td>NaN</td>
+      <td>3.980611</td>
+      <td>103.082207</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>2000-01-13</th>
+      <td>2.428280</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.621403</td>
+      <td>3.202610</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>...</td>
+      <td>6.087214</td>
+      <td>5.625959</td>
+      <td>NaN</td>
+      <td>4.306655</td>
+      <td>104.481773</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>2000-01-14</th>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>...</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+<p>10 rows × 26 columns</p>
+</div>
+
+
+
+
+```python
 close.head(10)
 ```
 
@@ -497,9 +709,7 @@ close.head(10)
 
 
 ```python
-vr = close.corr()
-vr.head(10)
-
+close_final.head(10)
 ```
 
 
@@ -548,244 +758,244 @@ vr.head(10)
   </thead>
   <tbody>
     <tr>
-      <th>AAPL</th>
-      <td>1.000000</td>
-      <td>-0.669186</td>
-      <td>0.650407</td>
-      <td>0.936062</td>
-      <td>0.684971</td>
-      <td>0.915372</td>
-      <td>-0.703757</td>
-      <td>0.593848</td>
-      <td>0.956831</td>
-      <td>0.185599</td>
+      <th>2000-01-03</th>
+      <td>9.207334</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>5.454494</td>
+      <td>3.846159</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
       <td>...</td>
-      <td>0.443312</td>
-      <td>-0.486193</td>
-      <td>-0.519303</td>
-      <td>0.937320</td>
-      <td>0.965438</td>
+      <td>8.021383</td>
+      <td>-2.945864</td>
       <td>NaN</td>
-      <td>0.708511</td>
-      <td>-0.493247</td>
+      <td>6.060700</td>
+      <td>4.069768</td>
       <td>NaN</td>
-      <td>0.887378</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
     </tr>
     <tr>
-      <th>BETR</th>
-      <td>-0.669186</td>
-      <td>1.000000</td>
-      <td>-0.078369</td>
-      <td>0.308227</td>
-      <td>-0.581386</td>
-      <td>-0.588406</td>
-      <td>0.747871</td>
-      <td>-0.505143</td>
-      <td>-0.555503</td>
-      <td>-0.119124</td>
+      <th>2000-01-04</th>
+      <td>-1.442326</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.000000</td>
+      <td>0.645167</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
       <td>...</td>
-      <td>-0.417232</td>
-      <td>-0.247830</td>
-      <td>0.410661</td>
-      <td>-0.637428</td>
-      <td>-0.556837</td>
+      <td>-1.058186</td>
+      <td>6.249988</td>
       <td>NaN</td>
-      <td>-0.664139</td>
+      <td>-8.333389</td>
+      <td>-0.178554</td>
       <td>NaN</td>
       <td>NaN</td>
-      <td>-0.140608</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
     </tr>
     <tr>
-      <th>BUFF</th>
-      <td>0.650407</td>
-      <td>-0.078369</td>
-      <td>1.000000</td>
-      <td>-0.248258</td>
-      <td>0.635458</td>
-      <td>0.797233</td>
-      <td>-0.531502</td>
-      <td>0.716681</td>
-      <td>0.698244</td>
-      <td>0.069239</td>
+      <th>2000-01-05</th>
+      <td>9.473724</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>-3.508792</td>
+      <td>-0.641031</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
       <td>...</td>
-      <td>0.598517</td>
-      <td>-0.015995</td>
-      <td>-0.159265</td>
-      <td>0.587096</td>
-      <td>0.758926</td>
+      <td>-5.499989</td>
+      <td>0.000000</td>
       <td>NaN</td>
-      <td>0.631657</td>
-      <td>-0.939039</td>
+      <td>5.882369</td>
+      <td>1.633390</td>
       <td>NaN</td>
-      <td>0.502931</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
     </tr>
     <tr>
-      <th>CALM</th>
-      <td>0.936062</td>
-      <td>0.308227</td>
-      <td>-0.248258</td>
-      <td>1.000000</td>
-      <td>0.544791</td>
-      <td>0.832050</td>
-      <td>0.289356</td>
-      <td>-0.265112</td>
-      <td>0.887796</td>
-      <td>-0.731628</td>
+      <th>2000-01-06</th>
+      <td>-4.522631</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
       <td>...</td>
-      <td>0.407775</td>
-      <td>-0.467830</td>
-      <td>-0.547360</td>
-      <td>0.878630</td>
-      <td>0.906301</td>
+      <td>-2.439039</td>
+      <td>3.231140</td>
       <td>NaN</td>
-      <td>0.548055</td>
-      <td>-0.270749</td>
+      <td>-2.857185</td>
+      <td>-5.488844</td>
       <td>NaN</td>
-      <td>0.878670</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
     </tr>
     <tr>
-      <th>CENT</th>
-      <td>0.684971</td>
-      <td>-0.581386</td>
-      <td>0.635458</td>
-      <td>0.544791</td>
-      <td>1.000000</td>
-      <td>0.736442</td>
-      <td>-0.835450</td>
-      <td>0.045755</td>
-      <td>0.690549</td>
-      <td>0.527623</td>
+      <th>2000-01-07</th>
+      <td>1.790248</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.000000</td>
+      <td>2.631604</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
       <td>...</td>
-      <td>0.604939</td>
-      <td>0.022598</td>
-      <td>-0.084792</td>
-      <td>0.753446</td>
-      <td>0.703491</td>
+      <td>8.465613</td>
+      <td>0.000000</td>
       <td>NaN</td>
-      <td>0.865030</td>
-      <td>-0.485567</td>
+      <td>2.941221</td>
+      <td>-0.341915</td>
       <td>NaN</td>
-      <td>0.348493</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
     </tr>
     <tr>
-      <th>CME</th>
-      <td>0.915372</td>
-      <td>-0.588406</td>
-      <td>0.797233</td>
-      <td>0.832050</td>
-      <td>0.736442</td>
-      <td>1.000000</td>
-      <td>-0.813358</td>
-      <td>0.301428</td>
-      <td>0.958832</td>
-      <td>0.221677</td>
+      <th>2000-01-10</th>
+      <td>5.390877</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>1.785807</td>
+      <td>-1.298713</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
       <td>...</td>
-      <td>0.515731</td>
-      <td>-0.451223</td>
-      <td>-0.287172</td>
-      <td>0.900730</td>
-      <td>0.957320</td>
+      <td>-0.526290</td>
+      <td>-8.828229</td>
       <td>NaN</td>
-      <td>0.886091</td>
-      <td>-0.413933</td>
+      <td>-2.857185</td>
+      <td>1.211101</td>
       <td>NaN</td>
-      <td>0.748169</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
     </tr>
     <tr>
-      <th>DTEA</th>
-      <td>-0.703757</td>
-      <td>0.747871</td>
-      <td>-0.531502</td>
-      <td>0.289356</td>
-      <td>-0.835450</td>
-      <td>-0.813358</td>
-      <td>1.000000</td>
-      <td>-0.057489</td>
-      <td>-0.858145</td>
-      <td>-0.300839</td>
+      <th>2000-01-11</th>
+      <td>6.379896</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.000000</td>
+      <td>-2.531639</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
       <td>...</td>
-      <td>-0.474996</td>
-      <td>0.288723</td>
-      <td>0.624573</td>
-      <td>-0.798169</td>
-      <td>-0.806289</td>
+      <td>0.000000</td>
+      <td>-19.047636</td>
       <td>NaN</td>
-      <td>-0.846973</td>
-      <td>0.249263</td>
+      <td>8.527156</td>
+      <td>1.004790</td>
       <td>NaN</td>
-      <td>-0.655630</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
     </tr>
     <tr>
-      <th>FRPT</th>
-      <td>0.593848</td>
-      <td>-0.505143</td>
-      <td>0.716681</td>
-      <td>-0.265112</td>
-      <td>0.045755</td>
-      <td>0.301428</td>
-      <td>-0.057489</td>
-      <td>1.000000</td>
-      <td>0.061231</td>
-      <td>0.072662</td>
+      <th>2000-01-12</th>
+      <td>-9.883692</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>0.000000</td>
+      <td>0.000000</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
       <td>...</td>
-      <td>0.473951</td>
-      <td>0.602256</td>
-      <td>0.470791</td>
-      <td>0.345904</td>
-      <td>0.393145</td>
+      <td>-7.317101</td>
+      <td>5.000031</td>
       <td>NaN</td>
-      <td>0.221741</td>
-      <td>-0.376312</td>
+      <td>-1.714008</td>
+      <td>-1.336197</td>
       <td>NaN</td>
-      <td>-0.035979</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
     </tr>
     <tr>
-      <th>GOOG</th>
-      <td>0.956831</td>
-      <td>-0.555503</td>
-      <td>0.698244</td>
-      <td>0.887796</td>
-      <td>0.690549</td>
-      <td>0.958832</td>
-      <td>-0.858145</td>
-      <td>0.061231</td>
-      <td>1.000000</td>
-      <td>0.244621</td>
+      <th>2000-01-13</th>
+      <td>-3.671488</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>-0.883646</td>
+      <td>3.947374</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
       <td>...</td>
-      <td>0.400323</td>
-      <td>-0.627298</td>
-      <td>-0.405371</td>
-      <td>0.940656</td>
-      <td>0.971929</td>
+      <td>-1.913880</td>
+      <td>-11.107973</td>
       <td>NaN</td>
-      <td>0.790159</td>
-      <td>-0.402471</td>
+      <td>-7.570702</td>
+      <td>-1.339531</td>
       <td>NaN</td>
-      <td>0.836116</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
     </tr>
     <tr>
-      <th>KHC</th>
-      <td>0.185599</td>
-      <td>-0.119124</td>
-      <td>0.069239</td>
-      <td>-0.731628</td>
-      <td>0.527623</td>
-      <td>0.221677</td>
-      <td>-0.300839</td>
-      <td>0.072662</td>
-      <td>0.244621</td>
-      <td>1.000000</td>
+      <th>2000-01-14</th>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
       <td>...</td>
-      <td>0.200496</td>
-      <td>0.084573</td>
-      <td>-0.690083</td>
-      <td>0.298551</td>
-      <td>0.312467</td>
       <td>NaN</td>
-      <td>0.360078</td>
-      <td>-0.385210</td>
       <td>NaN</td>
-      <td>0.605116</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
     </tr>
   </tbody>
 </table>
@@ -796,9 +1006,9 @@ vr.head(10)
 
 
 ```python
-covar = close.cov()
+covar = close_final.cov()
+
 covar.head(10)
-
 ```
 
 
@@ -848,243 +1058,243 @@ covar.head(10)
   <tbody>
     <tr>
       <th>AAPL</th>
-      <td>2222.202734</td>
-      <td>-51.143884</td>
-      <td>86.247963</td>
-      <td>694.738568</td>
-      <td>265.995337</td>
-      <td>1466.740664</td>
-      <td>-82.765683</td>
-      <td>67.761889</td>
-      <td>11591.169170</td>
-      <td>37.728778</td>
+      <td>8.895495</td>
+      <td>0.578006</td>
+      <td>0.441937</td>
+      <td>1.264006</td>
+      <td>1.455844</td>
+      <td>1.694867</td>
+      <td>0.154084</td>
+      <td>0.897254</td>
+      <td>1.836266</td>
+      <td>0.682035</td>
       <td>...</td>
-      <td>179.671918</td>
-      <td>-481.554740</td>
-      <td>-3827.297967</td>
-      <td>1435.955249</td>
-      <td>2337.901203</td>
+      <td>1.098257</td>
+      <td>0.050837</td>
+      <td>0.508248</td>
+      <td>1.075730</td>
+      <td>1.623106</td>
       <td>NaN</td>
-      <td>352.069745</td>
-      <td>-0.355950</td>
+      <td>1.436867</td>
+      <td>-4.072703</td>
       <td>NaN</td>
-      <td>652.981952</td>
+      <td>-0.059988</td>
     </tr>
     <tr>
       <th>BETR</th>
-      <td>-51.143884</td>
-      <td>8.469221</td>
-      <td>-0.874500</td>
-      <td>5.093134</td>
-      <td>-15.792594</td>
-      <td>-35.436553</td>
-      <td>8.089958</td>
-      <td>-5.467575</td>
-      <td>-206.356633</td>
-      <td>-2.486708</td>
+      <td>0.578006</td>
+      <td>13.049084</td>
+      <td>1.724265</td>
+      <td>0.673226</td>
+      <td>0.774846</td>
+      <td>0.385839</td>
+      <td>0.900242</td>
+      <td>1.274864</td>
+      <td>0.475736</td>
+      <td>0.420337</td>
       <td>...</td>
-      <td>-5.513968</td>
-      <td>-1.072438</td>
-      <td>0.567604</td>
-      <td>-52.470184</td>
-      <td>-41.257740</td>
+      <td>0.827826</td>
+      <td>1.496544</td>
+      <td>-0.184863</td>
+      <td>0.628844</td>
+      <td>0.683926</td>
       <td>NaN</td>
-      <td>-20.738042</td>
+      <td>0.496773</td>
       <td>NaN</td>
       <td>NaN</td>
-      <td>-0.847770</td>
+      <td>0.010206</td>
     </tr>
     <tr>
       <th>BUFF</th>
-      <td>86.247963</td>
-      <td>-0.874500</td>
-      <td>23.115937</td>
-      <td>-6.656368</td>
-      <td>29.778206</td>
-      <td>92.232768</td>
-      <td>-10.094158</td>
-      <td>13.691463</td>
-      <td>472.453186</td>
-      <td>2.471830</td>
+      <td>0.441937</td>
+      <td>1.724265</td>
+      <td>4.810366</td>
+      <td>0.677561</td>
+      <td>1.030790</td>
+      <td>0.451542</td>
+      <td>0.754770</td>
+      <td>1.571576</td>
+      <td>0.453654</td>
+      <td>0.606145</td>
       <td>...</td>
-      <td>12.812706</td>
-      <td>-0.114160</td>
-      <td>-0.389499</td>
-      <td>79.594885</td>
-      <td>99.745831</td>
+      <td>0.775815</td>
+      <td>-0.154047</td>
+      <td>-0.066875</td>
+      <td>0.730149</td>
+      <td>0.571134</td>
       <td>NaN</td>
-      <td>33.249147</td>
-      <td>-0.010075</td>
+      <td>0.489106</td>
+      <td>-1.036798</td>
       <td>NaN</td>
-      <td>4.958275</td>
+      <td>-0.012794</td>
     </tr>
     <tr>
       <th>CALM</th>
-      <td>694.738568</td>
-      <td>5.093134</td>
-      <td>-6.656368</td>
-      <td>247.884557</td>
-      <td>70.658497</td>
-      <td>433.381507</td>
-      <td>8.014144</td>
-      <td>-7.254609</td>
-      <td>3473.405906</td>
-      <td>-30.441695</td>
+      <td>1.264006</td>
+      <td>0.673226</td>
+      <td>0.677561</td>
+      <td>8.314661</td>
+      <td>1.155322</td>
+      <td>1.489070</td>
+      <td>0.707045</td>
+      <td>0.577692</td>
+      <td>1.120575</td>
+      <td>0.575955</td>
       <td>...</td>
-      <td>55.198158</td>
-      <td>-154.759782</td>
-      <td>-1297.838754</td>
-      <td>449.564252</td>
-      <td>733.005508</td>
+      <td>1.965127</td>
+      <td>0.454707</td>
+      <td>1.178936</td>
+      <td>1.308868</td>
+      <td>0.951023</td>
       <td>NaN</td>
-      <td>87.953866</td>
-      <td>-0.014825</td>
+      <td>1.658525</td>
+      <td>0.073846</td>
       <td>NaN</td>
-      <td>208.034860</td>
+      <td>-0.020696</td>
     </tr>
     <tr>
       <th>CENT</th>
-      <td>265.995337</td>
-      <td>-15.792594</td>
-      <td>29.778206</td>
-      <td>70.658497</td>
-      <td>67.860877</td>
-      <td>198.623289</td>
-      <td>-44.356682</td>
-      <td>2.332354</td>
-      <td>1471.136222</td>
-      <td>38.850326</td>
+      <td>1.455844</td>
+      <td>0.774846</td>
+      <td>1.030790</td>
+      <td>1.155322</td>
+      <td>9.922016</td>
+      <td>1.747228</td>
+      <td>0.451489</td>
+      <td>1.034990</td>
+      <td>1.403338</td>
+      <td>0.785943</td>
       <td>...</td>
-      <td>42.845016</td>
-      <td>3.911320</td>
-      <td>-106.745066</td>
-      <td>201.707986</td>
-      <td>297.699522</td>
+      <td>1.042613</td>
+      <td>0.555477</td>
+      <td>1.180167</td>
+      <td>1.086711</td>
+      <td>1.372155</td>
       <td>NaN</td>
-      <td>75.540931</td>
-      <td>-0.034895</td>
+      <td>2.336784</td>
+      <td>-1.503545</td>
       <td>NaN</td>
-      <td>43.795155</td>
+      <td>-0.044425</td>
     </tr>
     <tr>
       <th>CME</th>
-      <td>1466.740664</td>
-      <td>-35.436553</td>
-      <td>92.232768</td>
-      <td>433.381507</td>
-      <td>198.623289</td>
-      <td>1107.668606</td>
-      <td>-95.293370</td>
-      <td>33.283480</td>
-      <td>7555.474566</td>
-      <td>39.594868</td>
+      <td>1.694867</td>
+      <td>0.385839</td>
+      <td>0.451542</td>
+      <td>1.489070</td>
+      <td>1.747228</td>
+      <td>5.369265</td>
+      <td>0.251257</td>
+      <td>0.428709</td>
+      <td>1.800073</td>
+      <td>0.432083</td>
       <td>...</td>
-      <td>151.502388</td>
-      <td>-324.728354</td>
-      <td>-1421.099020</td>
-      <td>923.006151</td>
-      <td>1685.512973</td>
+      <td>2.034710</td>
+      <td>0.561485</td>
+      <td>1.010398</td>
+      <td>1.436096</td>
+      <td>1.596907</td>
       <td>NaN</td>
-      <td>286.588685</td>
-      <td>-0.190850</td>
+      <td>1.986680</td>
+      <td>-0.768186</td>
       <td>NaN</td>
-      <td>369.772985</td>
+      <td>-0.125832</td>
     </tr>
     <tr>
       <th>DTEA</th>
-      <td>-82.765683</td>
-      <td>8.089958</td>
-      <td>-10.094158</td>
-      <td>8.014144</td>
-      <td>-44.356682</td>
-      <td>-95.293370</td>
-      <td>21.061896</td>
-      <td>-1.226686</td>
-      <td>-690.122405</td>
-      <td>-9.310695</td>
+      <td>0.154084</td>
+      <td>0.900242</td>
+      <td>0.754770</td>
+      <td>0.707045</td>
+      <td>0.451489</td>
+      <td>0.251257</td>
+      <td>22.477646</td>
+      <td>0.846963</td>
+      <td>0.130118</td>
+      <td>0.471617</td>
       <td>...</td>
-      <td>-8.525583</td>
-      <td>2.428024</td>
-      <td>3.911218</td>
-      <td>-95.315793</td>
-      <td>-100.203509</td>
+      <td>1.129738</td>
+      <td>0.008399</td>
+      <td>-0.534185</td>
+      <td>0.627799</td>
+      <td>0.356360</td>
       <td>NaN</td>
-      <td>-46.097047</td>
-      <td>0.002325</td>
+      <td>0.467363</td>
+      <td>2.951310</td>
       <td>NaN</td>
-      <td>-7.783643</td>
+      <td>0.018272</td>
     </tr>
     <tr>
       <th>FRPT</th>
-      <td>67.761889</td>
-      <td>-5.467575</td>
-      <td>13.691463</td>
-      <td>-7.254609</td>
-      <td>2.332354</td>
-      <td>33.283480</td>
-      <td>-1.226686</td>
-      <td>20.528429</td>
-      <td>48.038368</td>
-      <td>2.170361</td>
+      <td>0.897254</td>
+      <td>1.274864</td>
+      <td>1.571576</td>
+      <td>0.577692</td>
+      <td>1.034990</td>
+      <td>0.428709</td>
+      <td>0.846963</td>
+      <td>10.491278</td>
+      <td>0.490234</td>
+      <td>0.897895</td>
       <td>...</td>
-      <td>8.729568</td>
-      <td>4.579280</td>
-      <td>2.332316</td>
-      <td>42.346433</td>
-      <td>47.337300</td>
+      <td>0.846426</td>
+      <td>-0.225623</td>
+      <td>0.576959</td>
+      <td>0.597092</td>
+      <td>0.642696</td>
       <td>NaN</td>
-      <td>11.464260</td>
-      <td>-0.036775</td>
+      <td>0.645580</td>
+      <td>-2.743662</td>
       <td>NaN</td>
-      <td>-0.378159</td>
+      <td>-0.037451</td>
     </tr>
     <tr>
       <th>GOOG</th>
-      <td>11591.169170</td>
-      <td>-206.356633</td>
-      <td>472.453186</td>
-      <td>3473.405906</td>
-      <td>1471.136222</td>
-      <td>7555.474566</td>
-      <td>-690.122405</td>
-      <td>48.038368</td>
-      <td>63383.871446</td>
-      <td>261.315275</td>
+      <td>1.836266</td>
+      <td>0.475736</td>
+      <td>0.453654</td>
+      <td>1.120575</td>
+      <td>1.403338</td>
+      <td>1.800073</td>
+      <td>0.130118</td>
+      <td>0.490234</td>
+      <td>3.621130</td>
+      <td>0.754626</td>
       <td>...</td>
-      <td>914.203627</td>
-      <td>-3501.813767</td>
-      <td>-15594.065694</td>
-      <td>7214.066331</td>
-      <td>12747.534615</td>
+      <td>1.003766</td>
+      <td>0.260870</td>
+      <td>0.373841</td>
+      <td>0.882783</td>
+      <td>1.277741</td>
       <td>NaN</td>
-      <td>2054.867736</td>
-      <td>-2.295279</td>
+      <td>1.370079</td>
+      <td>-1.270653</td>
       <td>NaN</td>
-      <td>3055.911118</td>
+      <td>-0.024299</td>
     </tr>
     <tr>
       <th>KHC</th>
-      <td>37.728778</td>
-      <td>-2.486708</td>
-      <td>2.471830</td>
-      <td>-30.441695</td>
-      <td>38.850326</td>
-      <td>39.594868</td>
-      <td>-9.310695</td>
-      <td>2.170361</td>
-      <td>261.315275</td>
-      <td>55.226767</td>
+      <td>0.682035</td>
+      <td>0.420337</td>
+      <td>0.606145</td>
+      <td>0.575955</td>
+      <td>0.785943</td>
+      <td>0.432083</td>
+      <td>0.471617</td>
+      <td>0.897895</td>
+      <td>0.754626</td>
+      <td>1.638744</td>
       <td>...</td>
-      <td>6.608097</td>
-      <td>0.962938</td>
-      <td>-2.866791</td>
-      <td>62.786642</td>
-      <td>63.315429</td>
+      <td>0.809656</td>
+      <td>0.160541</td>
+      <td>-0.301475</td>
+      <td>0.658950</td>
+      <td>0.591592</td>
       <td>NaN</td>
-      <td>29.476574</td>
-      <td>-0.105540</td>
+      <td>0.439923</td>
+      <td>-1.357823</td>
       <td>NaN</td>
-      <td>9.452360</td>
+      <td>0.008824</td>
     </tr>
   </tbody>
 </table>
@@ -1095,14 +1305,10 @@ covar.head(10)
 
 
 ```python
-market_temp = close.iloc[:,[20]]
+market_temp = close_final.iloc[:,[20]]
 market = market_temp.dropna()
 
 ```
-
-    SPY    571340.017387
-    dtype: float64
-
 
 
 ```python
@@ -1114,9 +1320,9 @@ print(variance)
 market.head(10)
 ```
 
-    SPY    124.610691
+    SPY   -0.011492
     dtype: float64
-    SPY    2638.883322
+    SPY    1.480824
     dtype: float64
 
 
@@ -1147,43 +1353,43 @@ market.head(10)
   <tbody>
     <tr>
       <th>2000-01-03</th>
-      <td>103.393242</td>
+      <td>4.069768</td>
     </tr>
     <tr>
       <th>2000-01-04</th>
-      <td>99.349930</td>
+      <td>-0.178554</td>
     </tr>
     <tr>
       <th>2000-01-05</th>
-      <td>99.527641</td>
+      <td>1.633390</td>
     </tr>
     <tr>
       <th>2000-01-06</th>
-      <td>97.928093</td>
+      <td>-5.488844</td>
     </tr>
     <tr>
       <th>2000-01-07</th>
-      <td>103.615379</td>
+      <td>-0.341915</td>
     </tr>
     <tr>
       <th>2000-01-10</th>
-      <td>103.970871</td>
+      <td>1.211101</td>
     </tr>
     <tr>
       <th>2000-01-11</th>
-      <td>102.726746</td>
+      <td>1.004790</td>
     </tr>
     <tr>
       <th>2000-01-12</th>
-      <td>101.704826</td>
+      <td>-1.336197</td>
     </tr>
     <tr>
       <th>2000-01-13</th>
-      <td>103.082207</td>
+      <td>-1.339531</td>
     </tr>
     <tr>
-      <th>2000-01-14</th>
-      <td>104.481773</td>
+      <th>2000-01-18</th>
+      <td>-0.807844</td>
     </tr>
   </tbody>
 </table>
@@ -1199,39 +1405,39 @@ print(variance[[0][0]])
 
 ```
 
-    AAPL     20183.781907
-    BETR      -459.850045
-    BUFF      1037.536241
-    CALM      5933.322620
-    CENT      3262.749249
-    CME      14873.458114
-    DTEA     -1334.633658
-    FRPT       269.015945
-    GOOG    112733.001666
-    KHC        741.789951
-    LANC     13850.834851
-    LWAY       785.685664
-    MSFT      7454.773054
-    NUTR         0.000000
-    PF        4623.434309
-    POST      7835.332044
-    PPC       2734.003288
-    RELV     -2898.545207
-    RIBT     -6549.491353
-    SAFM     13439.552800
-    SPY      23507.262977
-    TOF          0.000000
-    VVI       4551.484670
-    WILC        -4.062500
-    WWAV         0.000000
-    agg       4596.941615
+    AAPL    24.623828
+    BETR    26.986567
+    BUFF    16.812453
+    CALM    28.138761
+    CENT    31.026041
+    CME     26.674849
+    DTEA    34.010689
+    FRPT    22.516264
+    GOOG    20.357582
+    KHC     12.087360
+    LANC    15.664106
+    LWAY    24.102763
+    MSFT    20.212742
+    NUTR     0.000000
+    PF       5.824655
+    POST    11.109943
+    PPC     67.005785
+    RELV    39.625424
+    RIBT    49.511365
+    SAFM    30.833337
+    SPY     18.832532
+    TOF      0.000000
+    VVI     30.889375
+    WILC    -4.233405
+    WWAV     0.000000
+    agg     -0.349838
     dtype: float64
-    2638.88332232
+    1.48082445212
 
 
 
 ```python
-beta_appl = (covartotal/variance[[0][0]])
+beta_appl = (covartotal/(variance[[0][0]] ** 2 ))
 
 ```
 
@@ -1243,32 +1449,37 @@ beta_appl.head(100)
 
 
 
-    AAPL     7.648607
-    BETR    -0.174259
-    BUFF     0.393172
-    CALM     2.248422
-    CENT     1.236413
-    CME      5.636270
-    DTEA    -0.505757
-    FRPT     0.101943
-    GOOG    42.719964
-    KHC      0.281100
-    LANC     5.248748
-    LWAY     0.297734
-    MSFT     2.824973
+    AAPL    11.229190
+    BETR    12.306668
+    BUFF     7.666973
+    CALM    12.832102
+    CENT    14.148787
+    CME     12.164516
+    DTEA    15.509874
+    FRPT    10.268078
+    GOOG     9.283656
+    KHC      5.512191
+    LANC     7.143293
+    LWAY    10.991569
+    MSFT     9.217605
     NUTR     0.000000
-    PF       1.752042
-    POST     2.969185
-    PPC      1.036046
-    RELV    -1.098398
-    RIBT    -2.481918
-    SAFM     5.092894
-    SPY      8.908034
+    PF       2.656214
+    POST     5.066461
+    PPC     30.556608
+    RELV    18.070359
+    RIBT    22.578638
+    SAFM    14.060908
+    SPY      8.588188
     TOF      0.000000
-    VVI      1.724777
-    WILC    -0.001539
+    VVI     14.086463
+    WILC    -1.930557
     WWAV     0.000000
-    agg      1.742003
+    agg     -0.159537
     dtype: float64
 
 
+
+
+```python
+plt.plot(beta_appl)
+```
