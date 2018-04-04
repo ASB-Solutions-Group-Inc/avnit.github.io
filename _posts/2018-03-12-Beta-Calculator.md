@@ -1483,3 +1483,4 @@ beta_appl.head(100)
 ```python
 plt.plot(beta_appl)
 ```
+![png](https://github.com/avnit/ContractWork/blob/master/output_14_1.png)
