@@ -7,13 +7,9 @@ import numpy as np
 
 # read in all our data
 ks_data = pd.read_csv("data/ks-data.csv")
+ks_data.head(10)
 
-
-ks_data.head(100)
 ```
-
-    None
-
 
 
 
@@ -234,365 +230,332 @@ ks_data.head(100)
       <td>6240.57</td>
       <td>65000.00</td>
     </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+main_data = ks_data.groupby(['main_category','currency','pledged']).sum().fillna(0)
+main_data.head(100)
+```
+
+
+
+
+<div>
+<style>
+    .dataframe thead tr:only-child th {
+        text-align: right;
+    }
+
+    .dataframe thead th {
+        text-align: left;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th></th>
+      <th></th>
+      <th>ID</th>
+      <th>goal</th>
+      <th>backers</th>
+      <th>usd pledged</th>
+      <th>usd_pledged_real</th>
+      <th>usd_goal_real</th>
+    </tr>
     <tr>
-      <th>10</th>
-      <td>100004721</td>
-      <td>Of Jesus and Madmen</td>
-      <td>Nonfiction</td>
-      <td>Publishing</td>
-      <td>CAD</td>
-      <td>2013-10-09</td>
-      <td>2500.0</td>
-      <td>2013-09-09 18:19:37</td>
-      <td>0.00</td>
-      <td>failed</td>
+      <th>main_category</th>
+      <th>currency</th>
+      <th>pledged</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th rowspan="61" valign="top">Art</th>
+      <th rowspan="61" valign="top">AUD</th>
+      <th>0.00</th>
+      <td>85309221240</td>
+      <td>1951740.0</td>
       <td>0</td>
-      <td>CA</td>
       <td>0.00</td>
       <td>0.00</td>
-      <td>2406.39</td>
+      <td>1674289.71</td>
     </tr>
     <tr>
-      <th>11</th>
-      <td>100005484</td>
-      <td>Lisa Lim New CD!</td>
-      <td>Indie Rock</td>
-      <td>Music</td>
-      <td>USD</td>
-      <td>2013-04-08</td>
-      <td>12500.0</td>
-      <td>2013-03-09 06:42:58</td>
-      <td>12700.00</td>
-      <td>successful</td>
-      <td>100</td>
-      <td>US</td>
-      <td>12700.00</td>
-      <td>12700.00</td>
-      <td>12500.00</td>
+      <th>1.00</th>
+      <td>14270689056</td>
+      <td>1290631.0</td>
+      <td>13</td>
+      <td>7.66</td>
+      <td>10.55</td>
+      <td>989246.84</td>
     </tr>
     <tr>
-      <th>12</th>
-      <td>1000055792</td>
-      <td>The Cottage Market</td>
-      <td>Crafts</td>
-      <td>Crafts</td>
-      <td>USD</td>
-      <td>2014-10-02</td>
-      <td>5000.0</td>
-      <td>2014-09-02 17:11:50</td>
-      <td>0.00</td>
-      <td>failed</td>
-      <td>0</td>
-      <td>US</td>
-      <td>0.00</td>
-      <td>0.00</td>
-      <td>5000.00</td>
+      <th>2.00</th>
+      <td>5306746742</td>
+      <td>25018100.0</td>
+      <td>9</td>
+      <td>8.07</td>
+      <td>7.88</td>
+      <td>19151082.36</td>
     </tr>
     <tr>
-      <th>13</th>
-      <td>1000056157</td>
-      <td>G-Spot Place for Gamers to connect with eachot...</td>
-      <td>Games</td>
-      <td>Games</td>
-      <td>USD</td>
-      <td>2016-03-25</td>
-      <td>200000.0</td>
-      <td>2016-02-09 23:01:12</td>
-      <td>0.00</td>
-      <td>failed</td>
-      <td>0</td>
-      <td>US</td>
-      <td>0.00</td>
-      <td>0.00</td>
-      <td>200000.00</td>
-    </tr>
-    <tr>
-      <th>14</th>
-      <td>1000057089</td>
-      <td>Tombstone: Old West tabletop game and miniatur...</td>
-      <td>Tabletop Games</td>
-      <td>Games</td>
-      <td>GBP</td>
-      <td>2017-05-03</td>
-      <td>5000.0</td>
-      <td>2017-04-05 19:44:18</td>
-      <td>94175.00</td>
-      <td>successful</td>
-      <td>761</td>
-      <td>GB</td>
-      <td>57763.78</td>
-      <td>121857.33</td>
-      <td>6469.73</td>
-    </tr>
-    <tr>
-      <th>15</th>
-      <td>1000064368</td>
-      <td>Survival Rings</td>
-      <td>Design</td>
-      <td>Design</td>
-      <td>USD</td>
-      <td>2015-02-28</td>
-      <td>2500.0</td>
-      <td>2015-01-29 02:10:53</td>
-      <td>664.00</td>
-      <td>failed</td>
-      <td>11</td>
-      <td>US</td>
-      <td>664.00</td>
-      <td>664.00</td>
-      <td>2500.00</td>
-    </tr>
-    <tr>
-      <th>16</th>
-      <td>1000064918</td>
-      <td>The Beard</td>
-      <td>Comic Books</td>
-      <td>Comics</td>
-      <td>USD</td>
-      <td>2014-11-08</td>
-      <td>1500.0</td>
-      <td>2014-10-09 22:27:52</td>
-      <td>395.00</td>
-      <td>failed</td>
-      <td>16</td>
-      <td>US</td>
-      <td>395.00</td>
-      <td>395.00</td>
-      <td>1500.00</td>
-    </tr>
-    <tr>
-      <th>17</th>
-      <td>1000068480</td>
-      <td>Notes From London: Above &amp; Below</td>
-      <td>Art Books</td>
-      <td>Publishing</td>
-      <td>USD</td>
-      <td>2015-05-10</td>
-      <td>3000.0</td>
-      <td>2015-04-10 21:20:54</td>
-      <td>789.00</td>
-      <td>failed</td>
-      <td>20</td>
-      <td>US</td>
-      <td>789.00</td>
-      <td>789.00</td>
-      <td>3000.00</td>
-    </tr>
-    <tr>
-      <th>18</th>
-      <td>1000070642</td>
-      <td>Mike Corey's Darkness &amp; Light Album</td>
-      <td>Music</td>
-      <td>Music</td>
-      <td>USD</td>
-      <td>2012-08-17</td>
-      <td>250.0</td>
-      <td>2012-08-02 14:11:32</td>
-      <td>250.00</td>
-      <td>successful</td>
-      <td>7</td>
-      <td>US</td>
-      <td>250.00</td>
-      <td>250.00</td>
-      <td>250.00</td>
-    </tr>
-    <tr>
-      <th>19</th>
-      <td>1000071625</td>
-      <td>Boco Tea</td>
-      <td>Food</td>
-      <td>Food</td>
-      <td>USD</td>
-      <td>2012-06-02</td>
-      <td>5000.0</td>
-      <td>2012-05-03 17:24:32</td>
-      <td>1781.00</td>
-      <td>failed</td>
-      <td>40</td>
-      <td>US</td>
-      <td>1781.00</td>
-      <td>1781.00</td>
-      <td>5000.00</td>
-    </tr>
-    <tr>
-      <th>20</th>
-      <td>1000072011</td>
-      <td>CMUK. Shoes: Take on Life Feet First.</td>
-      <td>Fashion</td>
-      <td>Fashion</td>
-      <td>USD</td>
-      <td>2013-12-30</td>
-      <td>20000.0</td>
-      <td>2013-11-25 07:06:11</td>
-      <td>34268.00</td>
-      <td>successful</td>
-      <td>624</td>
-      <td>US</td>
-      <td>34268.00</td>
-      <td>34268.00</td>
-      <td>20000.00</td>
-    </tr>
-    <tr>
-      <th>21</th>
-      <td>1000081649</td>
-      <td>MikeyJ clothing brand fundraiser</td>
-      <td>Childrenswear</td>
-      <td>Fashion</td>
-      <td>AUD</td>
-      <td>2017-09-07</td>
-      <td>2500.0</td>
-      <td>2017-08-08 01:20:20</td>
-      <td>1.00</td>
-      <td>failed</td>
+      <th>3.00</th>
+      <td>808529669</td>
+      <td>30.0</td>
       <td>1</td>
-      <td>AU</td>
-      <td>0.00</td>
-      <td>0.81</td>
-      <td>2026.10</td>
+      <td>2.82</td>
+      <td>2.80</td>
+      <td>27.96</td>
     </tr>
     <tr>
-      <th>22</th>
-      <td>1000082254</td>
-      <td>Alice in Wonderland in G Minor</td>
-      <td>Theater</td>
-      <td>Theater</td>
-      <td>USD</td>
-      <td>2014-06-15</td>
-      <td>3500.0</td>
-      <td>2014-05-16 10:10:38</td>
-      <td>650.00</td>
-      <td>failed</td>
-      <td>12</td>
-      <td>US</td>
-      <td>650.00</td>
-      <td>650.00</td>
-      <td>3500.00</td>
+      <th>5.00</th>
+      <td>6512118491</td>
+      <td>12700.0</td>
+      <td>7</td>
+      <td>18.39</td>
+      <td>25.53</td>
+      <td>10659.45</td>
     </tr>
     <tr>
-      <th>23</th>
-      <td>1000087442</td>
-      <td>Mountain brew: A quest for alcohol sustainability</td>
-      <td>Drinks</td>
-      <td>Food</td>
-      <td>NOK</td>
-      <td>2015-02-25</td>
+      <th>6.00</th>
+      <td>1683274517</td>
+      <td>1000.0</td>
+      <td>2</td>
+      <td>5.64</td>
+      <td>5.64</td>
+      <td>940.56</td>
+    </tr>
+    <tr>
+      <th>9.00</th>
+      <td>1203811075</td>
       <td>500.0</td>
-      <td>2015-01-26 19:17:33</td>
-      <td>48.00</td>
-      <td>failed</td>
-      <td>3</td>
-      <td>NO</td>
-      <td>6.18</td>
-      <td>6.29</td>
-      <td>65.55</td>
+      <td>2</td>
+      <td>8.38</td>
+      <td>8.42</td>
+      <td>467.60</td>
     </tr>
     <tr>
-      <th>24</th>
-      <td>1000091520</td>
-      <td>The Book Zoo - A Mini-Comic</td>
-      <td>Comics</td>
-      <td>Comics</td>
-      <td>USD</td>
-      <td>2014-11-12</td>
-      <td>175.0</td>
-      <td>2014-10-23 17:15:50</td>
-      <td>701.66</td>
-      <td>successful</td>
-      <td>66</td>
-      <td>US</td>
-      <td>701.66</td>
-      <td>701.66</td>
-      <td>175.00</td>
+      <th>10.00</th>
+      <td>9991481798</td>
+      <td>23475.0</td>
+      <td>9</td>
+      <td>74.88</td>
+      <td>74.72</td>
+      <td>20348.56</td>
     </tr>
     <tr>
-      <th>25</th>
-      <td>1000102741</td>
-      <td>Matt Cavenaugh &amp; Jenny Powers make their 1st a...</td>
-      <td>Music</td>
-      <td>Music</td>
-      <td>USD</td>
-      <td>2011-01-06</td>
+      <th>13.00</th>
+      <td>542029527</td>
+      <td>5000.0</td>
+      <td>2</td>
+      <td>12.16</td>
+      <td>11.99</td>
+      <td>4610.42</td>
+    </tr>
+    <tr>
+      <th>16.00</th>
+      <td>2812118558</td>
+      <td>100015.0</td>
+      <td>6</td>
+      <td>27.98</td>
+      <td>26.53</td>
+      <td>79045.65</td>
+    </tr>
+    <tr>
+      <th>18.00</th>
+      <td>33527452</td>
+      <td>18.0</td>
+      <td>1</td>
+      <td>16.91</td>
+      <td>16.81</td>
+      <td>16.81</td>
+    </tr>
+    <tr>
+      <th>19.00</th>
+      <td>1780642078</td>
+      <td>2747.0</td>
+      <td>2</td>
+      <td>31.51</td>
+      <td>32.01</td>
+      <td>2203.21</td>
+    </tr>
+    <tr>
+      <th>20.00</th>
+      <td>46362595</td>
+      <td>8000.0</td>
+      <td>2</td>
+      <td>17.01</td>
+      <td>16.23</td>
+      <td>6491.93</td>
+    </tr>
+    <tr>
+      <th>21.00</th>
+      <td>1556779959</td>
+      <td>1655.0</td>
+      <td>5</td>
+      <td>32.04</td>
+      <td>32.83</td>
+      <td>1288.97</td>
+    </tr>
+    <tr>
+      <th>22.00</th>
+      <td>1325263664</td>
+      <td>800.0</td>
+      <td>2</td>
+      <td>19.81</td>
+      <td>20.09</td>
+      <td>730.53</td>
+    </tr>
+    <tr>
+      <th>23.00</th>
+      <td>509847355</td>
       <td>10000.0</td>
-      <td>2010-12-07 23:16:50</td>
-      <td>15827.00</td>
-      <td>successful</td>
-      <td>147</td>
-      <td>US</td>
-      <td>15827.00</td>
-      <td>15827.00</td>
-      <td>10000.00</td>
+      <td>1</td>
+      <td>18.80</td>
+      <td>18.18</td>
+      <td>7903.26</td>
     </tr>
     <tr>
-      <th>26</th>
-      <td>1000103948</td>
-      <td>Superhero Teddy Bear</td>
-      <td>DIY</td>
-      <td>Crafts</td>
-      <td>GBP</td>
-      <td>2016-01-05</td>
+      <th>25.00</th>
+      <td>9467987684</td>
+      <td>15702.0</td>
+      <td>10</td>
+      <td>109.88</td>
+      <td>128.04</td>
+      <td>13809.20</td>
+    </tr>
+    <tr>
+      <th>27.00</th>
+      <td>2332915906</td>
       <td>12000.0</td>
-      <td>2015-12-06 20:09:06</td>
-      <td>0.00</td>
-      <td>failed</td>
-      <td>0</td>
-      <td>GB</td>
-      <td>0.00</td>
-      <td>0.00</td>
-      <td>17489.65</td>
+      <td>5</td>
+      <td>21.99</td>
+      <td>62.22</td>
+      <td>9260.98</td>
     </tr>
     <tr>
-      <th>27</th>
-      <td>1000104688</td>
-      <td>Permaculture Skills</td>
-      <td>Webseries</td>
-      <td>Film &amp; Video</td>
-      <td>CAD</td>
-      <td>2014-12-14</td>
-      <td>17757.0</td>
-      <td>2014-11-14 18:02:00</td>
-      <td>48905.00</td>
-      <td>successful</td>
-      <td>571</td>
-      <td>CA</td>
-      <td>43203.25</td>
-      <td>42174.03</td>
-      <td>15313.04</td>
+      <th>27.15</th>
+      <td>662393126</td>
+      <td>7500.0</td>
+      <td>4</td>
+      <td>0.00</td>
+      <td>20.52</td>
+      <td>5668.51</td>
     </tr>
     <tr>
-      <th>28</th>
-      <td>1000104953</td>
-      <td>Rebel Army Origins: The Heroic Story Of Major ...</td>
-      <td>Comics</td>
-      <td>Comics</td>
-      <td>GBP</td>
-      <td>2016-01-28</td>
+      <th>30.00</th>
+      <td>8393938205</td>
+      <td>20606.0</td>
+      <td>12</td>
+      <td>145.02</td>
+      <td>142.09</td>
+      <td>17088.97</td>
+    </tr>
+    <tr>
+      <th>31.00</th>
+      <td>593099528</td>
+      <td>25.0</td>
+      <td>3</td>
+      <td>28.03</td>
+      <td>27.23</td>
+      <td>21.96</td>
+    </tr>
+    <tr>
+      <th>33.00</th>
+      <td>366948790</td>
+      <td>2200.0</td>
+      <td>3</td>
+      <td>3.82</td>
+      <td>25.36</td>
+      <td>1690.36</td>
+    </tr>
+    <tr>
+      <th>34.00</th>
+      <td>1090862725</td>
+      <td>60000.0</td>
+      <td>2</td>
+      <td>24.42</td>
+      <td>25.60</td>
+      <td>45177.32</td>
+    </tr>
+    <tr>
+      <th>35.00</th>
+      <td>1657193630</td>
+      <td>5000.0</td>
+      <td>2</td>
+      <td>25.23</td>
+      <td>26.79</td>
+      <td>3827.31</td>
+    </tr>
+    <tr>
+      <th>40.00</th>
+      <td>296700107</td>
+      <td>1500.0</td>
+      <td>2</td>
+      <td>33.63</td>
+      <td>31.42</td>
+      <td>1178.32</td>
+    </tr>
+    <tr>
+      <th>40.10</th>
+      <td>1619163216</td>
+      <td>300.0</td>
+      <td>9</td>
+      <td>32.95</td>
+      <td>32.93</td>
+      <td>246.33</td>
+    </tr>
+    <tr>
+      <th>40.69</th>
+      <td>1162721821</td>
       <td>100.0</td>
-      <td>2015-12-29 16:59:29</td>
-      <td>112.38</td>
-      <td>successful</td>
-      <td>27</td>
-      <td>GB</td>
-      <td>167.70</td>
-      <td>160.60</td>
-      <td>142.91</td>
+      <td>4</td>
+      <td>15.35</td>
+      <td>31.80</td>
+      <td>78.15</td>
     </tr>
     <tr>
-      <th>29</th>
-      <td>100011318</td>
-      <td>My Moon - Animated Short Film</td>
-      <td>Animation</td>
-      <td>Film &amp; Video</td>
-      <td>USD</td>
-      <td>2017-05-03</td>
-      <td>50000.0</td>
-      <td>2017-04-03 17:11:33</td>
-      <td>57577.31</td>
-      <td>successful</td>
-      <td>840</td>
-      <td>US</td>
-      <td>10120.00</td>
-      <td>57577.31</td>
-      <td>50000.00</td>
+      <th>42.00</th>
+      <td>474895395</td>
+      <td>2000.0</td>
+      <td>9</td>
+      <td>39.41</td>
+      <td>38.50</td>
+      <td>1833.52</td>
+    </tr>
+    <tr>
+      <th>45.00</th>
+      <td>1686310189</td>
+      <td>370.0</td>
+      <td>1</td>
+      <td>0.00</td>
+      <td>35.43</td>
+      <td>291.29</td>
+    </tr>
+    <tr>
+      <th>45.44</th>
+      <td>1151954511</td>
+      <td>9500.0</td>
+      <td>4</td>
+      <td>25.93</td>
+      <td>34.56</td>
+      <td>7224.88</td>
     </tr>
     <tr>
       <th>...</th>
@@ -602,559 +565,697 @@ ks_data.head(100)
       <td>...</td>
       <td>...</td>
       <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
     </tr>
     <tr>
-      <th>70</th>
-      <td>1000260691</td>
-      <td>Gizbee™ Unlimited Removable Storage for Your T...</td>
-      <td>Gadgets</td>
-      <td>Technology</td>
-      <td>USD</td>
-      <td>2016-03-25</td>
-      <td>87000.0</td>
-      <td>2016-02-29 20:30:27</td>
-      <td>2030.00</td>
-      <td>canceled</td>
-      <td>15</td>
-      <td>US</td>
-      <td>2030.00</td>
-      <td>2030.00</td>
-      <td>87000.00</td>
+      <th>185.00</th>
+      <td>789770484</td>
+      <td>2500.0</td>
+      <td>5</td>
+      <td>131.82</td>
+      <td>130.01</td>
+      <td>1756.85</td>
     </tr>
     <tr>
-      <th>71</th>
-      <td>1000261018</td>
-      <td>Diposta - liberating people from their postal ...</td>
-      <td>Web</td>
-      <td>Technology</td>
-      <td>USD</td>
-      <td>2016-08-23</td>
-      <td>100000.0</td>
-      <td>2016-07-24 13:18:36</td>
-      <td>141.00</td>
-      <td>failed</td>
-      <td>3</td>
-      <td>US</td>
-      <td>100.00</td>
-      <td>141.00</td>
-      <td>100000.00</td>
+      <th>192.00</th>
+      <td>363454737</td>
+      <td>150.0</td>
+      <td>5</td>
+      <td>125.46</td>
+      <td>148.99</td>
+      <td>116.40</td>
     </tr>
     <tr>
-      <th>72</th>
-      <td>1000268182</td>
-      <td>My Future Just Passed - Debut CD - Jazz Trio</td>
-      <td>Jazz</td>
-      <td>Music</td>
-      <td>USD</td>
-      <td>2014-12-03</td>
-      <td>4000.0</td>
-      <td>2014-11-03 21:11:44</td>
-      <td>4795.00</td>
-      <td>successful</td>
-      <td>95</td>
-      <td>US</td>
-      <td>4795.00</td>
-      <td>4795.00</td>
-      <td>4000.00</td>
-    </tr>
-    <tr>
-      <th>73</th>
-      <td>1000278154</td>
-      <td>Loot and Recruit - A quirky, combative, deck b...</td>
-      <td>Tabletop Games</td>
-      <td>Games</td>
-      <td>USD</td>
-      <td>2015-04-10</td>
-      <td>13000.0</td>
-      <td>2015-03-10 13:19:18</td>
-      <td>2453.00</td>
-      <td>canceled</td>
-      <td>65</td>
-      <td>US</td>
-      <td>2453.00</td>
-      <td>2453.00</td>
-      <td>13000.00</td>
-    </tr>
-    <tr>
-      <th>74</th>
-      <td>1000282287</td>
-      <td>Babe Ruth's Family Kitchen - Gourmet Hot Dogs ...</td>
-      <td>Food</td>
-      <td>Food</td>
-      <td>USD</td>
-      <td>2015-10-13</td>
-      <td>25000.0</td>
-      <td>2015-09-08 00:59:36</td>
-      <td>0.00</td>
-      <td>canceled</td>
-      <td>0</td>
-      <td>US</td>
-      <td>0.00</td>
-      <td>0.00</td>
-      <td>25000.00</td>
-    </tr>
-    <tr>
-      <th>75</th>
-      <td>1000291122</td>
-      <td>VOTE (anyone but) TRUMP Candle</td>
-      <td>Product Design</td>
-      <td>Design</td>
-      <td>GBP</td>
-      <td>2016-08-24</td>
-      <td>500.0</td>
-      <td>2016-07-12 17:31:42</td>
-      <td>218.00</td>
-      <td>failed</td>
+      <th>200.00</th>
+      <td>2393359781</td>
+      <td>3000.0</td>
       <td>6</td>
-      <td>GB</td>
-      <td>174.83</td>
-      <td>288.03</td>
-      <td>660.62</td>
+      <td>335.91</td>
+      <td>318.77</td>
+      <td>2464.77</td>
     </tr>
     <tr>
-      <th>76</th>
-      <td>1000291263</td>
-      <td>"It's Complicated" by Ariana Salome</td>
-      <td>Ready-to-wear</td>
-      <td>Fashion</td>
-      <td>USD</td>
-      <td>2016-06-09</td>
-      <td>68000.0</td>
-      <td>2016-05-10 22:52:00</td>
-      <td>0.00</td>
-      <td>failed</td>
-      <td>0</td>
-      <td>US</td>
-      <td>0.00</td>
-      <td>0.00</td>
-      <td>68000.00</td>
-    </tr>
-    <tr>
-      <th>77</th>
-      <td>1000294559</td>
-      <td>Secular Solstice 2014</td>
-      <td>Festivals</td>
-      <td>Theater</td>
-      <td>USD</td>
-      <td>2014-10-27</td>
-      <td>7500.0</td>
-      <td>2014-10-02 01:50:58</td>
-      <td>8157.01</td>
-      <td>successful</td>
-      <td>164</td>
-      <td>US</td>
-      <td>8157.01</td>
-      <td>8157.01</td>
-      <td>7500.00</td>
-    </tr>
-    <tr>
-      <th>78</th>
-      <td>1000320473</td>
-      <td>Uncommon Rhythm - Season One</td>
-      <td>Film &amp; Video</td>
-      <td>Film &amp; Video</td>
-      <td>USD</td>
-      <td>2013-09-13</td>
-      <td>29700.0</td>
-      <td>2013-08-15 11:16:24</td>
-      <td>10410.00</td>
-      <td>failed</td>
-      <td>76</td>
-      <td>US</td>
-      <td>10410.00</td>
-      <td>10410.00</td>
-      <td>29700.00</td>
-    </tr>
-    <tr>
-      <th>79</th>
-      <td>1000328150</td>
-      <td>Legacy of Svarog | a Unique 3D Action RPG and ...</td>
-      <td>Video Games</td>
-      <td>Games</td>
-      <td>USD</td>
-      <td>2015-10-30</td>
-      <td>50000.0</td>
-      <td>2015-08-31 06:33:31</td>
-      <td>1410.00</td>
-      <td>failed</td>
-      <td>38</td>
-      <td>US</td>
-      <td>1410.00</td>
-      <td>1410.00</td>
-      <td>50000.00</td>
-    </tr>
-    <tr>
-      <th>80</th>
-      <td>1000328328</td>
-      <td>ANVIL Beard</td>
-      <td>Fashion</td>
-      <td>Fashion</td>
-      <td>GBP</td>
-      <td>2015-02-06</td>
-      <td>2000.0</td>
-      <td>2014-12-15 19:13:37</td>
-      <td>61.00</td>
-      <td>failed</td>
-      <td>9</td>
-      <td>GB</td>
-      <td>95.87</td>
-      <td>93.44</td>
-      <td>3063.58</td>
-    </tr>
-    <tr>
-      <th>81</th>
-      <td>1000331311</td>
-      <td>AWE - Antediluvian Wars: Extermination Tactica...</td>
-      <td>Tabletop Games</td>
-      <td>Games</td>
-      <td>USD</td>
-      <td>2014-08-31</td>
-      <td>13000.0</td>
-      <td>2014-08-01 00:02:17</td>
-      <td>1811.00</td>
-      <td>failed</td>
-      <td>34</td>
-      <td>US</td>
-      <td>1811.00</td>
-      <td>1811.00</td>
-      <td>13000.00</td>
-    </tr>
-    <tr>
-      <th>82</th>
-      <td>1000332383</td>
-      <td>Road to the Shire</td>
-      <td>Documentary</td>
-      <td>Film &amp; Video</td>
-      <td>USD</td>
-      <td>2012-02-14</td>
-      <td>4000.0</td>
-      <td>2012-01-11 20:13:55</td>
-      <td>4045.00</td>
-      <td>successful</td>
-      <td>29</td>
-      <td>US</td>
-      <td>4045.00</td>
-      <td>4045.00</td>
-      <td>4000.00</td>
-    </tr>
-    <tr>
-      <th>83</th>
-      <td>1000333671</td>
-      <td>Spiral Electric Skylab Recording</td>
-      <td>Rock</td>
-      <td>Music</td>
-      <td>USD</td>
-      <td>2015-02-26</td>
-      <td>500.0</td>
-      <td>2015-02-04 18:54:23</td>
-      <td>1540.00</td>
-      <td>successful</td>
-      <td>31</td>
-      <td>US</td>
-      <td>1540.00</td>
-      <td>1540.00</td>
-      <td>500.00</td>
-    </tr>
-    <tr>
-      <th>84</th>
-      <td>1000334074</td>
-      <td>The Locals Only Shirt</td>
-      <td>Fashion</td>
-      <td>Fashion</td>
-      <td>USD</td>
-      <td>2012-05-18</td>
-      <td>500.0</td>
-      <td>2012-05-01 07:11:25</td>
-      <td>754.82</td>
-      <td>successful</td>
-      <td>36</td>
-      <td>US</td>
-      <td>754.82</td>
-      <td>754.82</td>
-      <td>500.00</td>
-    </tr>
-    <tr>
-      <th>85</th>
-      <td>1000335422</td>
-      <td>"Where is Home?" Anthology</td>
-      <td>Anthologies</td>
-      <td>Comics</td>
-      <td>CAD</td>
-      <td>2014-07-10</td>
-      <td>4000.0</td>
-      <td>2014-06-10 00:09:47</td>
-      <td>4944.50</td>
-      <td>successful</td>
-      <td>153</td>
-      <td>CA</td>
-      <td>4523.37</td>
-      <td>4646.65</td>
-      <td>3759.05</td>
-    </tr>
-    <tr>
-      <th>86</th>
-      <td>1000338818</td>
-      <td>Diet! No thanks, I'd rather lose weight</td>
-      <td>Publishing</td>
-      <td>Publishing</td>
-      <td>EUR</td>
-      <td>2016-10-30</td>
-      <td>10000.0</td>
-      <td>2016-08-31 18:13:01</td>
-      <td>88.00</td>
-      <td>failed</td>
-      <td>9</td>
-      <td>DE</td>
-      <td>22.35</td>
-      <td>97.62</td>
-      <td>11092.99</td>
-    </tr>
-    <tr>
-      <th>87</th>
-      <td>1000339877</td>
-      <td>The Onrust Project and Two Row Treaty of 1613</td>
-      <td>Theater</td>
-      <td>Theater</td>
-      <td>USD</td>
-      <td>2013-06-16</td>
-      <td>5000.0</td>
-      <td>2013-04-17 00:58:02</td>
-      <td>110.00</td>
-      <td>failed</td>
-      <td>2</td>
-      <td>US</td>
-      <td>110.00</td>
-      <td>110.00</td>
-      <td>5000.00</td>
-    </tr>
-    <tr>
-      <th>88</th>
-      <td>1000340977</td>
-      <td>My Coffee Box</td>
-      <td>Drinks</td>
-      <td>Food</td>
-      <td>USD</td>
-      <td>2014-06-16</td>
-      <td>3000.0</td>
-      <td>2014-05-17 22:43:36</td>
-      <td>1027.00</td>
-      <td>failed</td>
-      <td>18</td>
-      <td>US</td>
-      <td>1027.00</td>
-      <td>1027.00</td>
-      <td>3000.00</td>
-    </tr>
-    <tr>
-      <th>89</th>
-      <td>1000344383</td>
-      <td>¿Tu Sabes? (You Know?) a music collaboration b...</td>
-      <td>Music</td>
-      <td>Music</td>
-      <td>USD</td>
-      <td>2012-12-13</td>
-      <td>4500.0</td>
-      <td>2012-10-30 08:53:03</td>
-      <td>409.00</td>
-      <td>failed</td>
+      <th>216.00</th>
+      <td>3354299156</td>
+      <td>2155.0</td>
       <td>10</td>
-      <td>US</td>
-      <td>409.00</td>
-      <td>409.00</td>
-      <td>4500.00</td>
+      <td>359.79</td>
+      <td>361.49</td>
+      <td>1680.70</td>
     </tr>
     <tr>
-      <th>90</th>
-      <td>1000348690</td>
-      <td>The Silence of Hollowind - Urban Fantasy RPG</td>
-      <td>Tabletop Games</td>
-      <td>Games</td>
-      <td>EUR</td>
-      <td>2017-11-23</td>
-      <td>5000.0</td>
-      <td>2017-10-24 16:58:01</td>
-      <td>11238.00</td>
-      <td>successful</td>
-      <td>346</td>
-      <td>IT</td>
-      <td>5509.51</td>
-      <td>13347.43</td>
-      <td>5938.52</td>
-    </tr>
-    <tr>
-      <th>91</th>
-      <td>1000348776</td>
-      <td>P/O/V Comic and Literary Anthology</td>
-      <td>Comics</td>
-      <td>Comics</td>
-      <td>USD</td>
-      <td>2012-03-06</td>
-      <td>4289.0</td>
-      <td>2012-01-21 18:25:26</td>
-      <td>474.00</td>
-      <td>failed</td>
-      <td>14</td>
-      <td>US</td>
-      <td>474.00</td>
-      <td>474.00</td>
-      <td>4289.00</td>
-    </tr>
-    <tr>
-      <th>92</th>
-      <td>1000354338</td>
-      <td>"Little Shop of Horrors" at the Browncoat Thea...</td>
-      <td>Theater</td>
-      <td>Theater</td>
-      <td>USD</td>
-      <td>2012-08-14</td>
-      <td>2000.0</td>
-      <td>2012-06-30 20:05:26</td>
-      <td>2075.00</td>
-      <td>successful</td>
-      <td>40</td>
-      <td>US</td>
-      <td>2075.00</td>
-      <td>2075.00</td>
-      <td>2000.00</td>
-    </tr>
-    <tr>
-      <th>93</th>
-      <td>10003650</td>
-      <td>Glyscian Debut Album Recording (Canceled)</td>
-      <td>Rock</td>
-      <td>Music</td>
-      <td>USD</td>
-      <td>2012-05-26</td>
-      <td>15000.0</td>
-      <td>2012-03-27 04:25:46</td>
-      <td>151.00</td>
-      <td>canceled</td>
-      <td>4</td>
-      <td>US</td>
-      <td>151.00</td>
-      <td>151.00</td>
-      <td>15000.00</td>
-    </tr>
-    <tr>
-      <th>94</th>
-      <td>1000374001</td>
-      <td>The Dark Waters Project</td>
-      <td>Indie Rock</td>
-      <td>Music</td>
-      <td>USD</td>
-      <td>2013-04-07</td>
-      <td>10000.0</td>
-      <td>2013-02-20 01:48:42</td>
-      <td>10414.00</td>
-      <td>successful</td>
-      <td>113</td>
-      <td>US</td>
-      <td>10414.00</td>
-      <td>10414.00</td>
-      <td>10000.00</td>
-    </tr>
-    <tr>
-      <th>95</th>
-      <td>1000386601</td>
-      <td>Los Angeles International Student Film Festival</td>
-      <td>Film &amp; Video</td>
-      <td>Film &amp; Video</td>
-      <td>USD</td>
-      <td>2014-04-03</td>
-      <td>1500.0</td>
-      <td>2014-03-04 17:24:51</td>
-      <td>1932.99</td>
-      <td>successful</td>
-      <td>29</td>
-      <td>US</td>
-      <td>1932.99</td>
-      <td>1932.99</td>
-      <td>1500.00</td>
-    </tr>
-    <tr>
-      <th>96</th>
-      <td>1000389241</td>
-      <td>Bob Contemplates Ending It All</td>
-      <td>Shorts</td>
-      <td>Film &amp; Video</td>
-      <td>USD</td>
-      <td>2014-01-27</td>
-      <td>3000.0</td>
-      <td>2013-12-18 20:54:02</td>
-      <td>3755.00</td>
-      <td>successful</td>
-      <td>52</td>
-      <td>US</td>
-      <td>3755.00</td>
-      <td>3755.00</td>
-      <td>3000.00</td>
-    </tr>
-    <tr>
-      <th>97</th>
-      <td>1000392220</td>
-      <td>The Girls Bathroom</td>
-      <td>Webseries</td>
-      <td>Film &amp; Video</td>
-      <td>USD</td>
-      <td>2011-07-31</td>
-      <td>2000.0</td>
-      <td>2011-07-06 16:35:45</td>
-      <td>2252.99</td>
-      <td>successful</td>
-      <td>45</td>
-      <td>US</td>
-      <td>2252.99</td>
-      <td>2252.99</td>
-      <td>2000.00</td>
-    </tr>
-    <tr>
-      <th>98</th>
-      <td>100039820</td>
-      <td>Best Spray Bottle Ever - SureShot</td>
-      <td>Gadgets</td>
-      <td>Technology</td>
-      <td>CAD</td>
-      <td>2015-03-07</td>
-      <td>25000.0</td>
-      <td>2015-02-05 16:57:21</td>
-      <td>3.00</td>
-      <td>failed</td>
+      <th>225.00</th>
+      <td>1529012751</td>
+      <td>20000.0</td>
       <td>3</td>
-      <td>CA</td>
-      <td>2.41</td>
-      <td>2.36</td>
-      <td>19632.48</td>
+      <td>207.93</td>
+      <td>207.47</td>
+      <td>18441.68</td>
     </tr>
     <tr>
-      <th>99</th>
-      <td>1000399155</td>
-      <td>New Lasagna</td>
-      <td>Restaurants</td>
-      <td>Food</td>
-      <td>USD</td>
-      <td>2014-10-17</td>
+      <th>245.00</th>
+      <td>2120789349</td>
+      <td>5500.0</td>
+      <td>6</td>
+      <td>46.07</td>
+      <td>192.66</td>
+      <td>4324.92</td>
+    </tr>
+    <tr>
+      <th>255.00</th>
+      <td>1892635695</td>
+      <td>10000.0</td>
+      <td>3</td>
+      <td>198.49</td>
+      <td>197.57</td>
+      <td>7747.73</td>
+    </tr>
+    <tr>
+      <th>257.00</th>
+      <td>1533913565</td>
+      <td>5500.0</td>
+      <td>5</td>
+      <td>194.44</td>
+      <td>204.86</td>
+      <td>4384.22</td>
+    </tr>
+    <tr>
+      <th>260.00</th>
+      <td>2083741827</td>
+      <td>66700.0</td>
+      <td>9</td>
+      <td>195.73</td>
+      <td>390.13</td>
+      <td>50172.79</td>
+    </tr>
+    <tr>
+      <th>270.00</th>
+      <td>756207672</td>
+      <td>2000.0</td>
+      <td>6</td>
+      <td>0.00</td>
+      <td>203.16</td>
+      <td>1504.89</td>
+    </tr>
+    <tr>
+      <th>280.00</th>
+      <td>4660079071</td>
+      <td>10835.0</td>
+      <td>16</td>
+      <td>487.41</td>
+      <td>679.23</td>
+      <td>8776.56</td>
+    </tr>
+    <tr>
+      <th>282.75</th>
+      <td>244224398</td>
+      <td>1000.0</td>
+      <td>8</td>
+      <td>13.03</td>
+      <td>208.75</td>
+      <td>738.28</td>
+    </tr>
+    <tr>
+      <th>285.00</th>
+      <td>764853390</td>
       <td>5000.0</td>
-      <td>2014-08-18 11:13:15</td>
+      <td>6</td>
+      <td>263.26</td>
+      <td>268.44</td>
+      <td>4709.43</td>
+    </tr>
+    <tr>
+      <th>288.00</th>
+      <td>1467257223</td>
+      <td>3000.0</td>
+      <td>6</td>
+      <td>263.03</td>
+      <td>256.34</td>
+      <td>2670.23</td>
+    </tr>
+    <tr>
+      <th>298.00</th>
+      <td>1419891382</td>
+      <td>5000.0</td>
+      <td>4</td>
+      <td>265.64</td>
+      <td>275.67</td>
+      <td>4625.35</td>
+    </tr>
+    <tr>
+      <th>302.00</th>
+      <td>2023522647</td>
+      <td>2500.0</td>
+      <td>13</td>
+      <td>266.07</td>
+      <td>270.85</td>
+      <td>2242.15</td>
+    </tr>
+    <tr>
+      <th>320.00</th>
+      <td>1009283425</td>
+      <td>1000.0</td>
+      <td>5</td>
+      <td>3.84</td>
+      <td>242.35</td>
+      <td>757.35</td>
+    </tr>
+    <tr>
+      <th>334.00</th>
+      <td>270184121</td>
+      <td>5000.0</td>
+      <td>13</td>
+      <td>302.50</td>
+      <td>302.81</td>
+      <td>4533.09</td>
+    </tr>
+    <tr>
+      <th>338.00</th>
+      <td>1899901601</td>
+      <td>150.0</td>
+      <td>22</td>
       <td>0.00</td>
-      <td>failed</td>
-      <td>0</td>
-      <td>US</td>
-      <td>0.00</td>
-      <td>0.00</td>
-      <td>5000.00</td>
+      <td>267.70</td>
+      <td>118.80</td>
+    </tr>
+    <tr>
+      <th>342.00</th>
+      <td>1947106163</td>
+      <td>6000.0</td>
+      <td>13</td>
+      <td>39.61</td>
+      <td>274.39</td>
+      <td>4813.86</td>
+    </tr>
+    <tr>
+      <th>353.12</th>
+      <td>1666009607</td>
+      <td>300.0</td>
+      <td>8</td>
+      <td>294.34</td>
+      <td>274.65</td>
+      <td>233.34</td>
+    </tr>
+    <tr>
+      <th>355.00</th>
+      <td>117776208</td>
+      <td>300.0</td>
+      <td>25</td>
+      <td>30.22</td>
+      <td>272.59</td>
+      <td>230.36</td>
+    </tr>
+    <tr>
+      <th>356.03</th>
+      <td>1081136744</td>
+      <td>350.0</td>
+      <td>24</td>
+      <td>333.05</td>
+      <td>330.58</td>
+      <td>324.98</td>
+    </tr>
+    <tr>
+      <th>368.00</th>
+      <td>1152740971</td>
+      <td>350.0</td>
+      <td>12</td>
+      <td>332.80</td>
+      <td>323.29</td>
+      <td>307.48</td>
+    </tr>
+    <tr>
+      <th>373.00</th>
+      <td>59967489</td>
+      <td>2200.0</td>
+      <td>8</td>
+      <td>350.58</td>
+      <td>347.69</td>
+      <td>2050.71</td>
+    </tr>
+    <tr>
+      <th>375.00</th>
+      <td>482730891</td>
+      <td>500.0</td>
+      <td>15</td>
+      <td>332.17</td>
+      <td>329.61</td>
+      <td>439.48</td>
+    </tr>
+    <tr>
+      <th>385.00</th>
+      <td>667487716</td>
+      <td>45.0</td>
+      <td>14</td>
+      <td>36.92</td>
+      <td>304.71</td>
+      <td>35.62</td>
+    </tr>
+    <tr>
+      <th>396.00</th>
+      <td>1694478529</td>
+      <td>444.0</td>
+      <td>11</td>
+      <td>285.74</td>
+      <td>277.56</td>
+      <td>311.21</td>
+    </tr>
+    <tr>
+      <th>400.00</th>
+      <td>275653302</td>
+      <td>6000.0</td>
+      <td>13</td>
+      <td>178.56</td>
+      <td>313.26</td>
+      <td>4698.88</td>
+    </tr>
+    <tr>
+      <th>401.00</th>
+      <td>1387844348</td>
+      <td>1775.0</td>
+      <td>24</td>
+      <td>370.63</td>
+      <td>635.22</td>
+      <td>1400.04</td>
     </tr>
   </tbody>
 </table>
-<p>100 rows × 15 columns</p>
+<p>100 rows × 6 columns</p>
+</div>
+
+
+
+
+```python
+grouped = ks_data.groupby('deadline').agg({"usd_pledged_real": [sum,min,max]})
+grouped.head(10)
+grouped.tail(100)
+```
+
+
+
+
+<div>
+<style>
+    .dataframe thead tr:only-child th {
+        text-align: right;
+    }
+
+    .dataframe thead th {
+        text-align: left;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr>
+      <th></th>
+      <th colspan="3" halign="left">usd_pledged_real</th>
+    </tr>
+    <tr>
+      <th></th>
+      <th>sum</th>
+      <th>min</th>
+      <th>max</th>
+    </tr>
+    <tr>
+      <th>deadline</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2017-11-24</th>
+      <td>3555122.04</td>
+      <td>0.00</td>
+      <td>2209270.00</td>
+    </tr>
+    <tr>
+      <th>2017-11-25</th>
+      <td>1594187.93</td>
+      <td>0.00</td>
+      <td>424615.00</td>
+    </tr>
+    <tr>
+      <th>2017-11-26</th>
+      <td>630356.47</td>
+      <td>0.00</td>
+      <td>132795.34</td>
+    </tr>
+    <tr>
+      <th>2017-11-27</th>
+      <td>487843.91</td>
+      <td>0.00</td>
+      <td>84808.47</td>
+    </tr>
+    <tr>
+      <th>2017-11-28</th>
+      <td>955650.49</td>
+      <td>0.00</td>
+      <td>132246.00</td>
+    </tr>
+    <tr>
+      <th>2017-11-29</th>
+      <td>862662.23</td>
+      <td>0.00</td>
+      <td>147230.81</td>
+    </tr>
+    <tr>
+      <th>2017-11-30</th>
+      <td>2889150.20</td>
+      <td>0.00</td>
+      <td>552799.00</td>
+    </tr>
+    <tr>
+      <th>2017-12-01</th>
+      <td>4417653.57</td>
+      <td>0.00</td>
+      <td>901058.04</td>
+    </tr>
+    <tr>
+      <th>2017-12-02</th>
+      <td>1404655.77</td>
+      <td>0.00</td>
+      <td>308142.00</td>
+    </tr>
+    <tr>
+      <th>2017-12-03</th>
+      <td>1405305.66</td>
+      <td>0.00</td>
+      <td>525890.00</td>
+    </tr>
+    <tr>
+      <th>2017-12-04</th>
+      <td>1686918.43</td>
+      <td>0.00</td>
+      <td>319052.00</td>
+    </tr>
+    <tr>
+      <th>2017-12-05</th>
+      <td>1281472.11</td>
+      <td>0.00</td>
+      <td>333885.30</td>
+    </tr>
+    <tr>
+      <th>2017-12-06</th>
+      <td>1380214.37</td>
+      <td>0.00</td>
+      <td>193463.91</td>
+    </tr>
+    <tr>
+      <th>2017-12-07</th>
+      <td>4239030.75</td>
+      <td>0.00</td>
+      <td>1374021.00</td>
+    </tr>
+    <tr>
+      <th>2017-12-08</th>
+      <td>1569119.93</td>
+      <td>0.00</td>
+      <td>392050.00</td>
+    </tr>
+    <tr>
+      <th>2017-12-09</th>
+      <td>3614540.76</td>
+      <td>0.00</td>
+      <td>1059078.19</td>
+    </tr>
+    <tr>
+      <th>2017-12-10</th>
+      <td>1169818.59</td>
+      <td>0.00</td>
+      <td>336976.00</td>
+    </tr>
+    <tr>
+      <th>2017-12-11</th>
+      <td>776343.46</td>
+      <td>0.00</td>
+      <td>108671.00</td>
+    </tr>
+    <tr>
+      <th>2017-12-12</th>
+      <td>994899.16</td>
+      <td>0.00</td>
+      <td>169854.00</td>
+    </tr>
+    <tr>
+      <th>2017-12-13</th>
+      <td>1491456.65</td>
+      <td>0.00</td>
+      <td>490319.00</td>
+    </tr>
+    <tr>
+      <th>2017-12-14</th>
+      <td>3459127.75</td>
+      <td>0.00</td>
+      <td>905442.20</td>
+    </tr>
+    <tr>
+      <th>2017-12-15</th>
+      <td>2840262.83</td>
+      <td>0.00</td>
+      <td>299078.55</td>
+    </tr>
+    <tr>
+      <th>2017-12-16</th>
+      <td>1535061.83</td>
+      <td>0.00</td>
+      <td>200493.60</td>
+    </tr>
+    <tr>
+      <th>2017-12-17</th>
+      <td>3024527.28</td>
+      <td>0.00</td>
+      <td>959437.00</td>
+    </tr>
+    <tr>
+      <th>2017-12-18</th>
+      <td>930112.96</td>
+      <td>0.00</td>
+      <td>183672.00</td>
+    </tr>
+    <tr>
+      <th>2017-12-19</th>
+      <td>818062.72</td>
+      <td>0.00</td>
+      <td>290429.00</td>
+    </tr>
+    <tr>
+      <th>2017-12-20</th>
+      <td>1589046.53</td>
+      <td>0.00</td>
+      <td>215487.75</td>
+    </tr>
+    <tr>
+      <th>2017-12-21</th>
+      <td>2740310.61</td>
+      <td>0.00</td>
+      <td>300401.50</td>
+    </tr>
+    <tr>
+      <th>2017-12-22</th>
+      <td>1545897.78</td>
+      <td>0.00</td>
+      <td>264616.52</td>
+    </tr>
+    <tr>
+      <th>2017-12-23</th>
+      <td>1482775.77</td>
+      <td>0.00</td>
+      <td>312061.00</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>2018-02-02</th>
+      <td>56446.25</td>
+      <td>0.00</td>
+      <td>24849.00</td>
+    </tr>
+    <tr>
+      <th>2018-02-03</th>
+      <td>283099.38</td>
+      <td>0.00</td>
+      <td>270290.50</td>
+    </tr>
+    <tr>
+      <th>2018-02-04</th>
+      <td>24453.00</td>
+      <td>0.00</td>
+      <td>15166.00</td>
+    </tr>
+    <tr>
+      <th>2018-02-05</th>
+      <td>408851.98</td>
+      <td>0.00</td>
+      <td>336966.21</td>
+    </tr>
+    <tr>
+      <th>2018-02-06</th>
+      <td>154314.81</td>
+      <td>0.00</td>
+      <td>136755.34</td>
+    </tr>
+    <tr>
+      <th>2018-02-07</th>
+      <td>58141.35</td>
+      <td>0.00</td>
+      <td>42799.00</td>
+    </tr>
+    <tr>
+      <th>2018-02-08</th>
+      <td>10716.49</td>
+      <td>0.00</td>
+      <td>4086.48</td>
+    </tr>
+    <tr>
+      <th>2018-02-09</th>
+      <td>6759.43</td>
+      <td>0.00</td>
+      <td>2350.00</td>
+    </tr>
+    <tr>
+      <th>2018-02-10</th>
+      <td>50459.76</td>
+      <td>0.00</td>
+      <td>37697.00</td>
+    </tr>
+    <tr>
+      <th>2018-02-11</th>
+      <td>7667.67</td>
+      <td>0.00</td>
+      <td>2527.95</td>
+    </tr>
+    <tr>
+      <th>2018-02-12</th>
+      <td>273298.29</td>
+      <td>0.00</td>
+      <td>158883.48</td>
+    </tr>
+    <tr>
+      <th>2018-02-13</th>
+      <td>21042.33</td>
+      <td>0.00</td>
+      <td>19766.00</td>
+    </tr>
+    <tr>
+      <th>2018-02-14</th>
+      <td>7911.84</td>
+      <td>0.00</td>
+      <td>3127.00</td>
+    </tr>
+    <tr>
+      <th>2018-02-15</th>
+      <td>19487.17</td>
+      <td>3.99</td>
+      <td>13978.13</td>
+    </tr>
+    <tr>
+      <th>2018-02-16</th>
+      <td>64513.19</td>
+      <td>0.00</td>
+      <td>63444.59</td>
+    </tr>
+    <tr>
+      <th>2018-02-17</th>
+      <td>29025.43</td>
+      <td>0.00</td>
+      <td>12343.00</td>
+    </tr>
+    <tr>
+      <th>2018-02-18</th>
+      <td>2843.00</td>
+      <td>0.00</td>
+      <td>515.00</td>
+    </tr>
+    <tr>
+      <th>2018-02-19</th>
+      <td>4005.46</td>
+      <td>0.00</td>
+      <td>1608.15</td>
+    </tr>
+    <tr>
+      <th>2018-02-20</th>
+      <td>4720.61</td>
+      <td>0.00</td>
+      <td>2493.01</td>
+    </tr>
+    <tr>
+      <th>2018-02-21</th>
+      <td>10857.27</td>
+      <td>0.00</td>
+      <td>4886.00</td>
+    </tr>
+    <tr>
+      <th>2018-02-22</th>
+      <td>355.97</td>
+      <td>0.00</td>
+      <td>191.71</td>
+    </tr>
+    <tr>
+      <th>2018-02-23</th>
+      <td>11129.63</td>
+      <td>11.98</td>
+      <td>6894.99</td>
+    </tr>
+    <tr>
+      <th>2018-02-24</th>
+      <td>17328.00</td>
+      <td>0.00</td>
+      <td>15179.00</td>
+    </tr>
+    <tr>
+      <th>2018-02-25</th>
+      <td>1243.14</td>
+      <td>0.00</td>
+      <td>767.92</td>
+    </tr>
+    <tr>
+      <th>2018-02-26</th>
+      <td>1765.38</td>
+      <td>0.00</td>
+      <td>487.00</td>
+    </tr>
+    <tr>
+      <th>2018-02-27</th>
+      <td>436.73</td>
+      <td>0.00</td>
+      <td>430.00</td>
+    </tr>
+    <tr>
+      <th>2018-02-28</th>
+      <td>1323.80</td>
+      <td>0.00</td>
+      <td>1225.00</td>
+    </tr>
+    <tr>
+      <th>2018-03-01</th>
+      <td>57.36</td>
+      <td>1.00</td>
+      <td>50.00</td>
+    </tr>
+    <tr>
+      <th>2018-03-02</th>
+      <td>1518.19</td>
+      <td>0.00</td>
+      <td>557.80</td>
+    </tr>
+    <tr>
+      <th>2018-03-03</th>
+      <td>174.00</td>
+      <td>0.00</td>
+      <td>174.00</td>
+    </tr>
+  </tbody>
+</table>
+<p>100 rows × 3 columns</p>
 </div>
 
 
