@@ -1,4 +1,12 @@
 
+#### KS Sample data analysis project 
+###### Data file from kaggle project.
+###### Author: Avnit Bambah
+###### Date : 04/04/2018 
+
+### Learn how to plot in 2d and 3d. 
+#### Group by the data set and create reports.
+
 
 ```python
 %matplotlib inline 
@@ -7,242 +15,19 @@ import pandas as pd
 import numpy as np
 
 import matplotlib.pyplot as plt
-
-# read in all our data
-ks_data = pd.read_csv("data/ks-data.csv")
-ks_data.head(10)
-
 ```
 
 
-
-
-<div>
-<style>
-    .dataframe thead tr:only-child th {
-        text-align: right;
-    }
-
-    .dataframe thead th {
-        text-align: left;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>ID</th>
-      <th>name</th>
-      <th>category</th>
-      <th>main_category</th>
-      <th>currency</th>
-      <th>deadline</th>
-      <th>goal</th>
-      <th>launched</th>
-      <th>pledged</th>
-      <th>state</th>
-      <th>backers</th>
-      <th>country</th>
-      <th>usd pledged</th>
-      <th>usd_pledged_real</th>
-      <th>usd_goal_real</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>1000002330</td>
-      <td>The Songs of Adelaide &amp; Abullah</td>
-      <td>Poetry</td>
-      <td>Publishing</td>
-      <td>GBP</td>
-      <td>2015-10-09</td>
-      <td>1000.0</td>
-      <td>2015-08-11 12:12:28</td>
-      <td>0.00</td>
-      <td>failed</td>
-      <td>0</td>
-      <td>GB</td>
-      <td>0.00</td>
-      <td>0.00</td>
-      <td>1533.95</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>1000003930</td>
-      <td>Greeting From Earth: ZGAC Arts Capsule For ET</td>
-      <td>Narrative Film</td>
-      <td>Film &amp; Video</td>
-      <td>USD</td>
-      <td>2017-11-01</td>
-      <td>30000.0</td>
-      <td>2017-09-02 04:43:57</td>
-      <td>2421.00</td>
-      <td>failed</td>
-      <td>15</td>
-      <td>US</td>
-      <td>100.00</td>
-      <td>2421.00</td>
-      <td>30000.00</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>1000004038</td>
-      <td>Where is Hank?</td>
-      <td>Narrative Film</td>
-      <td>Film &amp; Video</td>
-      <td>USD</td>
-      <td>2013-02-26</td>
-      <td>45000.0</td>
-      <td>2013-01-12 00:20:50</td>
-      <td>220.00</td>
-      <td>failed</td>
-      <td>3</td>
-      <td>US</td>
-      <td>220.00</td>
-      <td>220.00</td>
-      <td>45000.00</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>1000007540</td>
-      <td>ToshiCapital Rekordz Needs Help to Complete Album</td>
-      <td>Music</td>
-      <td>Music</td>
-      <td>USD</td>
-      <td>2012-04-16</td>
-      <td>5000.0</td>
-      <td>2012-03-17 03:24:11</td>
-      <td>1.00</td>
-      <td>failed</td>
-      <td>1</td>
-      <td>US</td>
-      <td>1.00</td>
-      <td>1.00</td>
-      <td>5000.00</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>1000011046</td>
-      <td>Community Film Project: The Art of Neighborhoo...</td>
-      <td>Film &amp; Video</td>
-      <td>Film &amp; Video</td>
-      <td>USD</td>
-      <td>2015-08-29</td>
-      <td>19500.0</td>
-      <td>2015-07-04 08:35:03</td>
-      <td>1283.00</td>
-      <td>canceled</td>
-      <td>14</td>
-      <td>US</td>
-      <td>1283.00</td>
-      <td>1283.00</td>
-      <td>19500.00</td>
-    </tr>
-    <tr>
-      <th>5</th>
-      <td>1000014025</td>
-      <td>Monarch Espresso Bar</td>
-      <td>Restaurants</td>
-      <td>Food</td>
-      <td>USD</td>
-      <td>2016-04-01</td>
-      <td>50000.0</td>
-      <td>2016-02-26 13:38:27</td>
-      <td>52375.00</td>
-      <td>successful</td>
-      <td>224</td>
-      <td>US</td>
-      <td>52375.00</td>
-      <td>52375.00</td>
-      <td>50000.00</td>
-    </tr>
-    <tr>
-      <th>6</th>
-      <td>1000023410</td>
-      <td>Support Solar Roasted Coffee &amp; Green Energy!  ...</td>
-      <td>Food</td>
-      <td>Food</td>
-      <td>USD</td>
-      <td>2014-12-21</td>
-      <td>1000.0</td>
-      <td>2014-12-01 18:30:44</td>
-      <td>1205.00</td>
-      <td>successful</td>
-      <td>16</td>
-      <td>US</td>
-      <td>1205.00</td>
-      <td>1205.00</td>
-      <td>1000.00</td>
-    </tr>
-    <tr>
-      <th>7</th>
-      <td>1000030581</td>
-      <td>Chaser Strips. Our Strips make Shots their B*tch!</td>
-      <td>Drinks</td>
-      <td>Food</td>
-      <td>USD</td>
-      <td>2016-03-17</td>
-      <td>25000.0</td>
-      <td>2016-02-01 20:05:12</td>
-      <td>453.00</td>
-      <td>failed</td>
-      <td>40</td>
-      <td>US</td>
-      <td>453.00</td>
-      <td>453.00</td>
-      <td>25000.00</td>
-    </tr>
-    <tr>
-      <th>8</th>
-      <td>1000034518</td>
-      <td>SPIN - Premium Retractable In-Ear Headphones w...</td>
-      <td>Product Design</td>
-      <td>Design</td>
-      <td>USD</td>
-      <td>2014-05-29</td>
-      <td>125000.0</td>
-      <td>2014-04-24 18:14:43</td>
-      <td>8233.00</td>
-      <td>canceled</td>
-      <td>58</td>
-      <td>US</td>
-      <td>8233.00</td>
-      <td>8233.00</td>
-      <td>125000.00</td>
-    </tr>
-    <tr>
-      <th>9</th>
-      <td>100004195</td>
-      <td>STUDIO IN THE SKY - A Documentary Feature Film...</td>
-      <td>Documentary</td>
-      <td>Film &amp; Video</td>
-      <td>USD</td>
-      <td>2014-08-10</td>
-      <td>65000.0</td>
-      <td>2014-07-11 21:55:48</td>
-      <td>6240.57</td>
-      <td>canceled</td>
-      <td>43</td>
-      <td>US</td>
-      <td>6240.57</td>
-      <td>6240.57</td>
-      <td>65000.00</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-
+```python
+# read in all our data
+ks_data = pd.read_csv("data/ks-data.csv")
+ks_data.head(10)
+```
 
 
 ```python
 main_data = ks_data.groupby(['main_category','currency','pledged']).sum().fillna(0)
-main_data.head(100)
+main_data.head(10)
 ```
 
 
@@ -289,9 +74,9 @@ main_data.head(100)
   </thead>
   <tbody>
     <tr>
-      <th rowspan="61" valign="top">Art</th>
-      <th rowspan="61" valign="top">AUD</th>
-      <th>0.00</th>
+      <th rowspan="10" valign="top">Art</th>
+      <th rowspan="10" valign="top">AUD</th>
+      <th>0.0</th>
       <td>85309221240</td>
       <td>1951740.0</td>
       <td>0</td>
@@ -300,7 +85,7 @@ main_data.head(100)
       <td>1674289.71</td>
     </tr>
     <tr>
-      <th>1.00</th>
+      <th>1.0</th>
       <td>14270689056</td>
       <td>1290631.0</td>
       <td>13</td>
@@ -309,7 +94,7 @@ main_data.head(100)
       <td>989246.84</td>
     </tr>
     <tr>
-      <th>2.00</th>
+      <th>2.0</th>
       <td>5306746742</td>
       <td>25018100.0</td>
       <td>9</td>
@@ -318,7 +103,7 @@ main_data.head(100)
       <td>19151082.36</td>
     </tr>
     <tr>
-      <th>3.00</th>
+      <th>3.0</th>
       <td>808529669</td>
       <td>30.0</td>
       <td>1</td>
@@ -327,7 +112,7 @@ main_data.head(100)
       <td>27.96</td>
     </tr>
     <tr>
-      <th>5.00</th>
+      <th>5.0</th>
       <td>6512118491</td>
       <td>12700.0</td>
       <td>7</td>
@@ -336,7 +121,7 @@ main_data.head(100)
       <td>10659.45</td>
     </tr>
     <tr>
-      <th>6.00</th>
+      <th>6.0</th>
       <td>1683274517</td>
       <td>1000.0</td>
       <td>2</td>
@@ -345,7 +130,7 @@ main_data.head(100)
       <td>940.56</td>
     </tr>
     <tr>
-      <th>9.00</th>
+      <th>9.0</th>
       <td>1203811075</td>
       <td>500.0</td>
       <td>2</td>
@@ -354,7 +139,7 @@ main_data.head(100)
       <td>467.60</td>
     </tr>
     <tr>
-      <th>10.00</th>
+      <th>10.0</th>
       <td>9991481798</td>
       <td>23475.0</td>
       <td>9</td>
@@ -363,7 +148,7 @@ main_data.head(100)
       <td>20348.56</td>
     </tr>
     <tr>
-      <th>13.00</th>
+      <th>13.0</th>
       <td>542029527</td>
       <td>5000.0</td>
       <td>2</td>
@@ -372,7 +157,7 @@ main_data.head(100)
       <td>4610.42</td>
     </tr>
     <tr>
-      <th>16.00</th>
+      <th>16.0</th>
       <td>2812118558</td>
       <td>100015.0</td>
       <td>6</td>
@@ -380,468 +165,8 @@ main_data.head(100)
       <td>26.53</td>
       <td>79045.65</td>
     </tr>
-    <tr>
-      <th>18.00</th>
-      <td>33527452</td>
-      <td>18.0</td>
-      <td>1</td>
-      <td>16.91</td>
-      <td>16.81</td>
-      <td>16.81</td>
-    </tr>
-    <tr>
-      <th>19.00</th>
-      <td>1780642078</td>
-      <td>2747.0</td>
-      <td>2</td>
-      <td>31.51</td>
-      <td>32.01</td>
-      <td>2203.21</td>
-    </tr>
-    <tr>
-      <th>20.00</th>
-      <td>46362595</td>
-      <td>8000.0</td>
-      <td>2</td>
-      <td>17.01</td>
-      <td>16.23</td>
-      <td>6491.93</td>
-    </tr>
-    <tr>
-      <th>21.00</th>
-      <td>1556779959</td>
-      <td>1655.0</td>
-      <td>5</td>
-      <td>32.04</td>
-      <td>32.83</td>
-      <td>1288.97</td>
-    </tr>
-    <tr>
-      <th>22.00</th>
-      <td>1325263664</td>
-      <td>800.0</td>
-      <td>2</td>
-      <td>19.81</td>
-      <td>20.09</td>
-      <td>730.53</td>
-    </tr>
-    <tr>
-      <th>23.00</th>
-      <td>509847355</td>
-      <td>10000.0</td>
-      <td>1</td>
-      <td>18.80</td>
-      <td>18.18</td>
-      <td>7903.26</td>
-    </tr>
-    <tr>
-      <th>25.00</th>
-      <td>9467987684</td>
-      <td>15702.0</td>
-      <td>10</td>
-      <td>109.88</td>
-      <td>128.04</td>
-      <td>13809.20</td>
-    </tr>
-    <tr>
-      <th>27.00</th>
-      <td>2332915906</td>
-      <td>12000.0</td>
-      <td>5</td>
-      <td>21.99</td>
-      <td>62.22</td>
-      <td>9260.98</td>
-    </tr>
-    <tr>
-      <th>27.15</th>
-      <td>662393126</td>
-      <td>7500.0</td>
-      <td>4</td>
-      <td>0.00</td>
-      <td>20.52</td>
-      <td>5668.51</td>
-    </tr>
-    <tr>
-      <th>30.00</th>
-      <td>8393938205</td>
-      <td>20606.0</td>
-      <td>12</td>
-      <td>145.02</td>
-      <td>142.09</td>
-      <td>17088.97</td>
-    </tr>
-    <tr>
-      <th>31.00</th>
-      <td>593099528</td>
-      <td>25.0</td>
-      <td>3</td>
-      <td>28.03</td>
-      <td>27.23</td>
-      <td>21.96</td>
-    </tr>
-    <tr>
-      <th>33.00</th>
-      <td>366948790</td>
-      <td>2200.0</td>
-      <td>3</td>
-      <td>3.82</td>
-      <td>25.36</td>
-      <td>1690.36</td>
-    </tr>
-    <tr>
-      <th>34.00</th>
-      <td>1090862725</td>
-      <td>60000.0</td>
-      <td>2</td>
-      <td>24.42</td>
-      <td>25.60</td>
-      <td>45177.32</td>
-    </tr>
-    <tr>
-      <th>35.00</th>
-      <td>1657193630</td>
-      <td>5000.0</td>
-      <td>2</td>
-      <td>25.23</td>
-      <td>26.79</td>
-      <td>3827.31</td>
-    </tr>
-    <tr>
-      <th>40.00</th>
-      <td>296700107</td>
-      <td>1500.0</td>
-      <td>2</td>
-      <td>33.63</td>
-      <td>31.42</td>
-      <td>1178.32</td>
-    </tr>
-    <tr>
-      <th>40.10</th>
-      <td>1619163216</td>
-      <td>300.0</td>
-      <td>9</td>
-      <td>32.95</td>
-      <td>32.93</td>
-      <td>246.33</td>
-    </tr>
-    <tr>
-      <th>40.69</th>
-      <td>1162721821</td>
-      <td>100.0</td>
-      <td>4</td>
-      <td>15.35</td>
-      <td>31.80</td>
-      <td>78.15</td>
-    </tr>
-    <tr>
-      <th>42.00</th>
-      <td>474895395</td>
-      <td>2000.0</td>
-      <td>9</td>
-      <td>39.41</td>
-      <td>38.50</td>
-      <td>1833.52</td>
-    </tr>
-    <tr>
-      <th>45.00</th>
-      <td>1686310189</td>
-      <td>370.0</td>
-      <td>1</td>
-      <td>0.00</td>
-      <td>35.43</td>
-      <td>291.29</td>
-    </tr>
-    <tr>
-      <th>45.44</th>
-      <td>1151954511</td>
-      <td>9500.0</td>
-      <td>4</td>
-      <td>25.93</td>
-      <td>34.56</td>
-      <td>7224.88</td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-      <td>...</td>
-    </tr>
-    <tr>
-      <th>185.00</th>
-      <td>789770484</td>
-      <td>2500.0</td>
-      <td>5</td>
-      <td>131.82</td>
-      <td>130.01</td>
-      <td>1756.85</td>
-    </tr>
-    <tr>
-      <th>192.00</th>
-      <td>363454737</td>
-      <td>150.0</td>
-      <td>5</td>
-      <td>125.46</td>
-      <td>148.99</td>
-      <td>116.40</td>
-    </tr>
-    <tr>
-      <th>200.00</th>
-      <td>2393359781</td>
-      <td>3000.0</td>
-      <td>6</td>
-      <td>335.91</td>
-      <td>318.77</td>
-      <td>2464.77</td>
-    </tr>
-    <tr>
-      <th>216.00</th>
-      <td>3354299156</td>
-      <td>2155.0</td>
-      <td>10</td>
-      <td>359.79</td>
-      <td>361.49</td>
-      <td>1680.70</td>
-    </tr>
-    <tr>
-      <th>225.00</th>
-      <td>1529012751</td>
-      <td>20000.0</td>
-      <td>3</td>
-      <td>207.93</td>
-      <td>207.47</td>
-      <td>18441.68</td>
-    </tr>
-    <tr>
-      <th>245.00</th>
-      <td>2120789349</td>
-      <td>5500.0</td>
-      <td>6</td>
-      <td>46.07</td>
-      <td>192.66</td>
-      <td>4324.92</td>
-    </tr>
-    <tr>
-      <th>255.00</th>
-      <td>1892635695</td>
-      <td>10000.0</td>
-      <td>3</td>
-      <td>198.49</td>
-      <td>197.57</td>
-      <td>7747.73</td>
-    </tr>
-    <tr>
-      <th>257.00</th>
-      <td>1533913565</td>
-      <td>5500.0</td>
-      <td>5</td>
-      <td>194.44</td>
-      <td>204.86</td>
-      <td>4384.22</td>
-    </tr>
-    <tr>
-      <th>260.00</th>
-      <td>2083741827</td>
-      <td>66700.0</td>
-      <td>9</td>
-      <td>195.73</td>
-      <td>390.13</td>
-      <td>50172.79</td>
-    </tr>
-    <tr>
-      <th>270.00</th>
-      <td>756207672</td>
-      <td>2000.0</td>
-      <td>6</td>
-      <td>0.00</td>
-      <td>203.16</td>
-      <td>1504.89</td>
-    </tr>
-    <tr>
-      <th>280.00</th>
-      <td>4660079071</td>
-      <td>10835.0</td>
-      <td>16</td>
-      <td>487.41</td>
-      <td>679.23</td>
-      <td>8776.56</td>
-    </tr>
-    <tr>
-      <th>282.75</th>
-      <td>244224398</td>
-      <td>1000.0</td>
-      <td>8</td>
-      <td>13.03</td>
-      <td>208.75</td>
-      <td>738.28</td>
-    </tr>
-    <tr>
-      <th>285.00</th>
-      <td>764853390</td>
-      <td>5000.0</td>
-      <td>6</td>
-      <td>263.26</td>
-      <td>268.44</td>
-      <td>4709.43</td>
-    </tr>
-    <tr>
-      <th>288.00</th>
-      <td>1467257223</td>
-      <td>3000.0</td>
-      <td>6</td>
-      <td>263.03</td>
-      <td>256.34</td>
-      <td>2670.23</td>
-    </tr>
-    <tr>
-      <th>298.00</th>
-      <td>1419891382</td>
-      <td>5000.0</td>
-      <td>4</td>
-      <td>265.64</td>
-      <td>275.67</td>
-      <td>4625.35</td>
-    </tr>
-    <tr>
-      <th>302.00</th>
-      <td>2023522647</td>
-      <td>2500.0</td>
-      <td>13</td>
-      <td>266.07</td>
-      <td>270.85</td>
-      <td>2242.15</td>
-    </tr>
-    <tr>
-      <th>320.00</th>
-      <td>1009283425</td>
-      <td>1000.0</td>
-      <td>5</td>
-      <td>3.84</td>
-      <td>242.35</td>
-      <td>757.35</td>
-    </tr>
-    <tr>
-      <th>334.00</th>
-      <td>270184121</td>
-      <td>5000.0</td>
-      <td>13</td>
-      <td>302.50</td>
-      <td>302.81</td>
-      <td>4533.09</td>
-    </tr>
-    <tr>
-      <th>338.00</th>
-      <td>1899901601</td>
-      <td>150.0</td>
-      <td>22</td>
-      <td>0.00</td>
-      <td>267.70</td>
-      <td>118.80</td>
-    </tr>
-    <tr>
-      <th>342.00</th>
-      <td>1947106163</td>
-      <td>6000.0</td>
-      <td>13</td>
-      <td>39.61</td>
-      <td>274.39</td>
-      <td>4813.86</td>
-    </tr>
-    <tr>
-      <th>353.12</th>
-      <td>1666009607</td>
-      <td>300.0</td>
-      <td>8</td>
-      <td>294.34</td>
-      <td>274.65</td>
-      <td>233.34</td>
-    </tr>
-    <tr>
-      <th>355.00</th>
-      <td>117776208</td>
-      <td>300.0</td>
-      <td>25</td>
-      <td>30.22</td>
-      <td>272.59</td>
-      <td>230.36</td>
-    </tr>
-    <tr>
-      <th>356.03</th>
-      <td>1081136744</td>
-      <td>350.0</td>
-      <td>24</td>
-      <td>333.05</td>
-      <td>330.58</td>
-      <td>324.98</td>
-    </tr>
-    <tr>
-      <th>368.00</th>
-      <td>1152740971</td>
-      <td>350.0</td>
-      <td>12</td>
-      <td>332.80</td>
-      <td>323.29</td>
-      <td>307.48</td>
-    </tr>
-    <tr>
-      <th>373.00</th>
-      <td>59967489</td>
-      <td>2200.0</td>
-      <td>8</td>
-      <td>350.58</td>
-      <td>347.69</td>
-      <td>2050.71</td>
-    </tr>
-    <tr>
-      <th>375.00</th>
-      <td>482730891</td>
-      <td>500.0</td>
-      <td>15</td>
-      <td>332.17</td>
-      <td>329.61</td>
-      <td>439.48</td>
-    </tr>
-    <tr>
-      <th>385.00</th>
-      <td>667487716</td>
-      <td>45.0</td>
-      <td>14</td>
-      <td>36.92</td>
-      <td>304.71</td>
-      <td>35.62</td>
-    </tr>
-    <tr>
-      <th>396.00</th>
-      <td>1694478529</td>
-      <td>444.0</td>
-      <td>11</td>
-      <td>285.74</td>
-      <td>277.56</td>
-      <td>311.21</td>
-    </tr>
-    <tr>
-      <th>400.00</th>
-      <td>275653302</td>
-      <td>6000.0</td>
-      <td>13</td>
-      <td>178.56</td>
-      <td>313.26</td>
-      <td>4698.88</td>
-    </tr>
-    <tr>
-      <th>401.00</th>
-      <td>1387844348</td>
-      <td>1775.0</td>
-      <td>24</td>
-      <td>370.63</td>
-      <td>635.22</td>
-      <td>1400.04</td>
-    </tr>
   </tbody>
 </table>
-<p>100 rows × 6 columns</p>
 </div>
 
 
@@ -850,7 +175,7 @@ main_data.head(100)
 ```python
 grouped = ks_data.groupby('deadline').agg({"usd_pledged_real": [sum,min,max]})
 grouped.head(10)
-grouped.tail(100)
+grouped.tail(10)
 ```
 
 
@@ -1271,14 +596,14 @@ plt.plot(grouped)
 
 
 
-    [<matplotlib.lines.Line2D at 0x1290c6eb8>,
-     <matplotlib.lines.Line2D at 0x128ff1278>,
-     <matplotlib.lines.Line2D at 0x128fe9ba8>]
+    [<matplotlib.lines.Line2D at 0x151102828>,
+     <matplotlib.lines.Line2D at 0x150e655c0>,
+     <matplotlib.lines.Line2D at 0x150e6c668>]
 
 
 
 
-![png](output_3_1.png)
+![png](output_5_1.png)
 
 
 
@@ -1289,12 +614,12 @@ plt.contour(grouped)
 
 
 
-    <matplotlib.contour.QuadContourSet at 0x136d69748>
+    <matplotlib.contour.QuadContourSet at 0x15075c400>
 
 
 
 
-![png](output_4_1.png)
+![png](output_6_1.png)
 
 # 3d ploting 
 from mpl_toolkits.mplot3d import axes3d
