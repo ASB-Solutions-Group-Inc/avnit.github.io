@@ -1,9 +1,12 @@
 
 
 ```python
+%matplotlib inline 
 # modules we'll use
 import pandas as pd
 import numpy as np
+
+import matplotlib.pyplot as plt
 
 # read in all our data
 ks_data = pd.read_csv("data/ks-data.csv")
@@ -1259,3 +1262,45 @@ grouped.tail(100)
 </div>
 
 
+
+
+```python
+plt.plot(grouped)
+```
+
+
+
+
+    [<matplotlib.lines.Line2D at 0x1290c6eb8>,
+     <matplotlib.lines.Line2D at 0x128ff1278>,
+     <matplotlib.lines.Line2D at 0x128fe9ba8>]
+
+
+
+
+![png](output_3_1.png)
+
+
+
+```python
+plt.contour(grouped)
+```
+
+
+
+
+    <matplotlib.contour.QuadContourSet at 0x136d69748>
+
+
+
+
+![png](output_4_1.png)
+
+# 3d ploting 
+from mpl_toolkits.mplot3d import axes3d
+from matplotlib import cm 
+
+fig = plt.figure()
+ax = fig.gca(projection='3d')
+cset = ax.contour(grouped,grouped,grouped)
+plt.show()
