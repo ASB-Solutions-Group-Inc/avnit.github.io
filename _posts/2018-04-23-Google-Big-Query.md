@@ -10,7 +10,7 @@ Continuous Delivery (CD)
 Build is Success -> Staging -> Deploys to all the nodes on the Production line. 
 We can come up with various stages for production line. 
 
-Goal : 
+## Goal 
 #### Automate everything
 #### Elimate any manual tasks
 #### Store application and infrastructure code in version control
