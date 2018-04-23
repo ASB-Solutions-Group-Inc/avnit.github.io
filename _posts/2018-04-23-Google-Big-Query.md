@@ -1,7 +1,6 @@
 unnest ( difference ) diff - will create it own path 
 
 ### Continuous Integration (CI)
-####### 
 
 DEV -> Version Control -> CI Server -> Build -> Test -> Feed back to the developer 
 
