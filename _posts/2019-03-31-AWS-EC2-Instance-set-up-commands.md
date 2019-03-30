@@ -1,7 +1,7 @@
 ---
 layout: post
 published: true
-title: 'AWS EC2 Instance commands '
+title: 'AWS EC2 Instance set up commands '
 date: '2019-04-01'
 ---
 
