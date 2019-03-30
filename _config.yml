@@ -75,6 +75,7 @@ social-network-links:
   facebook: abambah
   github: abambah
   twitter: avnit
+  linkedin: avnit
 #  reddit: yourname
 #   google-plus: abambah
 #  linkedin: daattali
@@ -94,7 +95,7 @@ share-links-active:
   twitter: true
   facebook: true
   google: false
-  linkedin: false
+  linkedin: true
 
 # How to display the link to the website in the footer
 # Remove this if you don't want a link in the footer
