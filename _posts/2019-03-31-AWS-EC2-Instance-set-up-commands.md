@@ -1,21 +1,21 @@
 <p>
 	<li>sudo yum update</li>
-	sudo yum install java
-	sudo yum install python
-	sudo yum install wget
+	<li>sudo yum install java</li>
+	<li>sudo yum install python</li>
+	<li>sudo yum install wget</li>
 #get Pip setup 
-curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-sudo python get-pip.py
+<li>curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py</li>
+<li>sudo python get-pip.py</li>
   </p>
 # Checking the version of PIP
-`pip -v
-pip list`
+<li>pip -v</li>
+<li>pip list</li>
 # Install awscli
-`sudo pip install awscli
-#install npm
-sudo yum install -y gcc-c++ make
-curl -sL https://rpm.nodesource.com/setup_6.x | sudo -E bash -
-sudo yum install nodejs
-npm -v
-node -v
-npm list`
+<li>sudo pip install awscli</li>
+#install npm</li>
+<li>sudo yum install -y gcc-c++ make</li>
+<li>curl -sL https://rpm.nodesource.com/setup_6.x | sudo -E bash -</li>
+<li>sudo yum install nodejs</li>
+<li>npm -v</li>
+<li>node -v</li>
+<li>npm list</li>
