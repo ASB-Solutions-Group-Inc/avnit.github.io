@@ -2,6 +2,7 @@
 layout: post
 published: true
 title: 'AWS EC2 Instance commands '
+date: '2019-04-01'
 ---
 
 After the Amazon EC2 Linux instance is created to install the base modules following commands are run. 	
