@@ -1,4 +1,6 @@
 <p>
+After the Amazon EC2 Linux instance is created to install the base modules following commands are run. 
+	
 	<li>sudo yum update</li>
 	<li>sudo yum install java</li>
 	<li>sudo yum install python</li>
@@ -12,7 +14,7 @@
 <li>pip list</li>
 # Install awscli
 <li>sudo pip install awscli</li>
-#install npm</li>
+#install npm
 <li>sudo yum install -y gcc-c++ make</li>
 <li>curl -sL https://rpm.nodesource.com/setup_6.x | sudo -E bash -</li>
 <li>sudo yum install nodejs</li>
