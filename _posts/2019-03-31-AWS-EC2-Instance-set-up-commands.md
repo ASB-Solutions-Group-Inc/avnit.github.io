@@ -1,4 +1,4 @@
-
+<code>
 After the Amazon EC2 Linux instance is created to install the base modules following commands are run. 	
 	
 	sudo yum update
@@ -22,4 +22,4 @@ After the Amazon EC2 Linux instance is created to install the base modules follo
 	npm -v
 	node -v
 	npm list
-
+</code>
