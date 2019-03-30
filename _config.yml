@@ -23,7 +23,7 @@ description: Avnit Blog Page
 
 # List of links in the navigation bar
 navbar-links:
- # About Me: "aboutme"
+  About Me: "aboutme"
   Resources:
     - Learn markdown: "http://www.markdowntutorial.com/"
     - GitHub Pages: "https://pages.github.com/"
