@@ -1,7 +1,7 @@
 ---
 layout: post
-published: false
-title: AWS EC2 Machine set up commands
+published: true
+title: 2019-04-01-AWS-EC2-Machine-set-up-commands
 ---
 
 After the Amazon EC2 Linux instance is created to install the base modules following commands are run. 	
@@ -31,4 +31,3 @@ After the Amazon EC2 Linux instance is created to install the base modules follo
 - 	npm -v
 - 	node -v
 - 	npm list
-
