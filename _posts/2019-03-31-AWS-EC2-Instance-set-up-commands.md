@@ -37,3 +37,4 @@ The Amazon Linux 2 instance is created on EC2 and to install the base modules fo
 - ###### sudo su 
 - ###### yum install -y httpd.x86_64
 - systemctl start httpd.service 
+- systemctl enable httpd.service 
