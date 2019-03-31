@@ -5,7 +5,7 @@ title: 'AWS EC2 Instance set up commands '
 date: '2019-04-01'
 ---
 
-After the Amazon EC2 Linux instance is created to install the base modules following commands are run. 	
+The Amazon Linux 2 instance is created on EC2 and to install the base modules following commands are run. 	
 
 #### Install Java, Python and Wget 
 	
@@ -36,3 +36,4 @@ After the Amazon EC2 Linux instance is created to install the base modules follo
 #### Install Apache 
 - ###### sudo su 
 - ###### yum install -y httpd.x86_64
+- systemctl start httpd.service 
