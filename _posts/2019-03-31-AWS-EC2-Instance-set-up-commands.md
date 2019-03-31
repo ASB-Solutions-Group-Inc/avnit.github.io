@@ -10,9 +10,9 @@ After the Amazon EC2 Linux instance is created to install the base modules follo
 #### Install Java, Python and Wget 
 	
 -  ###### sudo yum update
--  ###### sudo yum install java
--  ###### sudo yum install python
--  ###### sudo yum install wget
+-  ###### sudo yum install -y java
+-  ###### sudo yum install -y python
+-  ###### sudo yum install -y wget
 	
 #### get Pip setup 
 -  ###### curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
@@ -33,3 +33,6 @@ After the Amazon EC2 Linux instance is created to install the base modules follo
 -  ###### npm -v
 -  ###### node -v
 -  ###### npm list
+#### Install Apache 
+- ###### sudo su 
+- ###### yum install -y httpd.x86_64
