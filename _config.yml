@@ -23,7 +23,7 @@ description: This is a Blog Page.
 
 # List of links in the navigation bar
 navbar-links:
-  About Me:  "http://avnitlabs-alb-1012738838.us-east-2.elb.amazonaws.com/"
+  About Me:  "http://avnit-resume-1690017651.us-east-2.elb.amazonaws.com/"
   Resources:
     - Learn markdown: "http://www.markdowntutorial.com/"
     - GitHub Pages: "https://pages.github.com/"
