@@ -23,11 +23,10 @@ description: "This is Avnit's blog page. "
 
 # List of links in the navigation bar
 navbar-links:
-  About My Consulting Serives:  "http://www.asbsolutionsgroup.com/"
+  About My Consulting Serives:  "https://www.asbsolutionsgroup.com/"
   Resources:
     - Learn markdown: "http://www.markdowntutorial.com/"
     - GitHub Pages: "https://pages.github.com/"
-  # Author's home: "http://avnitlabs-alb-1012738838.us-east-2.elb.amazonaws.com/"
 
 # Image to show in the navigation bar - image must be a square (width = height)
 # Remove this parameter if you don't want an image in the navbar
