@@ -14,16 +14,16 @@ baseurl: ""
 # Of course don't forget to change the username and projectname to YOUR username and project
 
 # Name of website
-title: Blog Page
+title: Avnit Blog Page
 
 # Short description of your site
-description: This is a Blog Page. 
+description: "This is Avnit's blog page. "
 
 # --- Navigation bar options --- #
 
 # List of links in the navigation bar
 navbar-links:
-  About Me:  "http://avnit-resume-1690017651.us-east-2.elb.amazonaws.com/"
+  About My Consulting Serives:  "http://www.asbsolutionsgroup.com/"
   Resources:
     - Learn markdown: "http://www.markdowntutorial.com/"
     - GitHub Pages: "https://pages.github.com/"
@@ -77,19 +77,6 @@ social-network-links:
   github: abambah
   twitter: avnit
   linkedin: avnit
-#  reddit: yourname
-#   google-plus: abambah
-#  linkedin: daattali
-#  xing: yourname
-#  stackoverflow: "3943160/daattali"
-#  snapchat: deanat78
-#  instagram: deanat78
-#  youtube: user/deanat78
-#  spotify: yourname
-#  telephone: +14159998888
-#  steam: deanat78
-#  twitch: yourname
-#  yelp: yourname
 
 # Select which share links to show in posts
 share-links-active:
