@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Python-for-everyone
-subtitle: Teaching material: Python for Everyone
+subtitle: "Teaching material: Python for Everyone"
 gh-repo: avnit/Python-for-everyone
 gh-badge: [star, fork, follow]
 tags: [projects, python]
