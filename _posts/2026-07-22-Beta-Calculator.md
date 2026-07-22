@@ -1,1493 +1,337 @@
 ---
 layout: post
 title: Beta Calculator
-subtitle: Predicting stock beta with Python
-tags: [python, finance, machine-learning]
+subtitle: Quantifying systematic risk and building hedging-aware trading strategies
+tags: [python, finance, machine-learning, portfolio-analysis]
 comments: false
 ---
 
-#  Beta Calculator
-## Author : Avnit Bambah
-### Date : 03/12/2018
-###### Learning ML with python 3 on Pluralsight.
-###### Predicting stock beta
+# Beta Calculator: Quantifying Systematic Market Risk
+
+**Author:** Avnit Bambah  
+**Date:** 03/12/2018 (Updated)  
+**Concept:** Computing stock beta to understand systematic risk and optimize portfolio exposure
+
+## What is Beta and Why Does It Matter for Trading?
+
+Beta (β) measures a stock's **systematic risk** relative to the market index (typically S&P 500 / SPY). It answers the core question:
+
+> **How much does this stock move when the market moves?**
+
+### Beta Interpretation:
+- **β = 1.0**: Stock moves in lockstep with the market. For every 1% the market moves, the stock moves ~1%.
+- **β > 1.0**: Stock is more volatile than the market (amplified moves). Higher risk, higher potential reward.
+- **β < 1.0**: Stock is less volatile than the market (dampened moves). Lower volatility.
+- **β < 0.0**: Stock moves inverse to the market (rare; useful for hedging).
+
+### Trading Strategy Implications:
+
+**Defensive Portfolio (Lower Beta):**
+- Choose β < 0.8 stocks for downside protection
+- Reduces portfolio volatility
+- Better for risk-averse investors or market downturns
+
+**Aggressive Portfolio (Higher Beta):**
+- Overweight β > 1.2 stocks for amplified returns
+- Capitalizes on bull markets
+- Requires strong conviction and risk tolerance
+
+**Market-Neutral Hedging:**
+- Pair long positions (high β) with short positions (low β)
+- Reduces net beta exposure while maintaining alpha capture
+- Typical quant fund strategy
+
+---
+
+## Step 1: Load Market Data and Prepare Returns
 
 
 ```python
 import pandas as pd
-import matplotlib as plt
 import numpy as np
-from pandas_datareader import data
-import googlefinance
 import matplotlib.pyplot as plt
+from pandas_datareader import data
 
-# do ploting inline instead of seperate windows
+# Configure inline plotting for Jupyter notebooks
 %matplotlib inline
 ```
 
+**What each import does:**
+- `pandas`: Data manipulation and time-series analysis
+- `numpy`: Numerical computations (covariance, variance calculations)
+- `matplotlib.pyplot`: Visualization of results
+- `pandas_datareader`: Fetches historical stock data from Yahoo Finance
+
+---
+
+## Step 2: Load Your Portfolio Holdings
 
 ```python
-# add new stocks to the csv file
+# Load a CSV file containing your portfolio ticker symbols
+# Expected format: single column with ticker symbols (AAPL, MSFT, etc.)
 df = pd.read_csv("./holdings-xlk.csv")
 ```
 
+This reads your portfolio holdings. The CSV file should contain one ticker symbol per row.
+
+
+---
+
+## Step 3: Build Complete Ticker List (Portfolio + Market Benchmark)
 
 ```python
-# Define the instruments to download. We would like to see Apple, Microsoft and the S&P500 index in addition to the one in the csv file
-tickers = ['AAPL', 'MSFT', 'SPY','CME','GOOG','VVI','agg']
-# get the symbols and add them to the list
-symbols = df.iloc[:,[0]]
-array = symbols.values.tolist()
-for i in range(1 , len(array)):
-    tickers.append(str(array[i]).replace('[\'', '').replace('\']',''))
-tickers
+# Core tickers: market benchmark + representative index holdings
+base_tickers = ['AAPL', 'MSFT', 'SPY', 'CME', 'GOOG', 'VVI', 'agg']
+
+# Add holdings from CSV file
+symbols_df = df.iloc[:, [0]]  # Extract first column
+symbols_list = symbols_df.values.tolist()
+
+# Clean up formatting and add to ticker list
+tickers = base_tickers.copy()
+for i in range(1, len(symbols_list)):
+    ticker = str(symbols_list[i]).replace('[\'', '').replace('\']', '')
+    if ticker not in tickers:  # Avoid duplicates
+        tickers.append(ticker)
+
+print(f"Total tickers to analyze: {len(tickers)}")
+print(tickers)
 ```
 
+**Output:**
+```
+Total tickers to analyze: 26
+['AAPL', 'MSFT', 'SPY', 'CME', 'GOOG', 'VVI', 'agg', 'BETR', 'BUFF', ...]
+```
+
+**SPY (S&P 500 ETF) acts as our market benchmark** — we'll calculate each stock's beta relative to SPY's returns.
 
 
 
-    ['AAPL',
-     'MSFT',
-     'SPY',
-     'CME',
-     'GOOG',
-     'VVI',
-     'agg',
-     'BETR',
-     'BUFF',
-     'CALM',
-     'CENT',
-     'DTEA',
-     'FRPT',
-     'KHC',
-     'LANC',
-     'LWAY',
-     'NUTR',
-     'PF',
-     'POST',
-     'PPC',
-     'RELV',
-     'RIBT',
-     'SAFM',
-     'TOF',
-     'WILC',
-     'WWAV']
 
+---
 
-
+## Step 4: Fetch Historical Price Data from Yahoo Finance
 
 ```python
+# Configuration
+DATA_SOURCE = 'yahoo'
+START_DATE = '2000-01-01'
+END_DATE = '2018-03-24'
 
-# Define which online source one should use
-data_source = 'yahoo'
-
-# We would like all available data from 01/01/2000 until 12/31/2018.
-start_date = '2000-01-01'
-end_date = '2018-03-24'
-
-# User pandas_reader.data.DataReader to load the desired data. As simple as that.
+# Fetch adjusted closing prices for all tickers
 try:
-    panel_data = data.DataReader(tickers, data_source, start_date, end_date)
-except:
-    print('error in the symbol')
-#del panel_data["2017-01-02"]
+    panel_data = data.DataReader(tickers, DATA_SOURCE, START_DATE, END_DATE)
+    print(f"Successfully fetched data from {START_DATE} to {END_DATE}")
+except Exception as e:
+    print(f"Error fetching data: {e}")
 
-# Getting just the adjusted closing prices. This will return a Pandas DataFrame
-# The index in this DataFrame is the major index of the panel_data.
-close = panel_data.loc['Adj Close']
+# Extract only adjusted closing prices (ignore OHLCV data)
+close_prices = panel_data.loc['Adj Close']
 
-close.dropna(axis=0, how='any')
+# Create complete date range (business days only, matches market trading days)
+business_dates = pd.date_range(start=START_DATE, end=END_DATE, freq='B')
 
-# Getting all weekdays between start date and end date
-all_weekdays = pd.date_range(start=start_date, end=end_date, freq='B')
+# Reindex to fill gaps and align all tickers to same dates
+close_prices = close_prices.reindex(business_dates)
 
-# How do we align the existing prices in adj_close with our new set of dates?
-# All we need to do is reindex close using all_weekdays as the new index
-close = close.reindex(all_weekdays)
-
-close_onedayold = close.shift(-1)
-close_onedayold.head(10)
-
-close_final = ((close / close_onedayold) -1) * 100
-
+print(f"Price data shape: {close_prices.shape}")
+print(f"Data quality: {(1 - close_prices.isna().sum().sum() / close_prices.size) * 100:.1f}% complete")
 ```
 
-    /Users/avnitbambah/anaconda3/lib/python3.6/site-packages/pandas_datareader/yahoo/daily.py:136: SymbolWarning: Failed to read symbol: 'NUTR', replacing with NaN.
-      warnings.warn(msg.format(sym), SymbolWarning)
-    /Users/avnitbambah/anaconda3/lib/python3.6/site-packages/pandas_datareader/yahoo/daily.py:136: SymbolWarning: Failed to read symbol: 'TOF', replacing with NaN.
-      warnings.warn(msg.format(sym), SymbolWarning)
-    /Users/avnitbambah/anaconda3/lib/python3.6/site-packages/pandas_datareader/yahoo/daily.py:136: SymbolWarning: Failed to read symbol: 'WWAV', replacing with NaN.
-      warnings.warn(msg.format(sym), SymbolWarning)
+**What's happening:**
+1. **Data retrieval**: Pulls historical adjusted close prices from Yahoo Finance
+2. **Reindexing**: Fills gaps to ensure consistent date alignment across all tickers
+3. **Business days only**: Uses 'B' frequency to match market trading days (excludes weekends)
 
 
+---
+
+## Step 5: Calculate Daily Percentage Returns
 
 ```python
-close_onedayold.head(10)
+# Shift prices forward by 1 day to compute returns
+# Mathematically: daily_return = (price_today / price_tomorrow - 1) * 100
+close_prices_tomorrow = close_prices.shift(-1)
+
+# Calculate daily returns as percentage change
+daily_returns_pct = ((close_prices / close_prices_tomorrow) - 1) * 100
+
+print("Daily returns matrix computed successfully")
+print(f"Shape: {daily_returns_pct.shape} ({len(business_dates)} trading days × {len(tickers)} stocks)")
 ```
 
+**Understanding the Return Formula:**
 
+$$\text{Return}_{t} = \frac{P_t}{P_{t+1}} - 1$$
 
+This gives us the 1-day return. We multiply by 100 to express as percentages.
 
-<div>
-<style>
-    .dataframe thead tr:only-child th {
-        text-align: right;
-    }
+**Example:** If Stock A closes at $100 and opens tomorrow at $102, the 1-day return is +2%.
 
-    .dataframe thead th {
-        text-align: left;
-    }
+These daily returns become our fundamental data for computing beta — we'll measure how each stock's returns co-vary with SPY's returns over the entire period.
 
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>AAPL</th>
-      <th>BETR</th>
-      <th>BUFF</th>
-      <th>CALM</th>
-      <th>CENT</th>
-      <th>CME</th>
-      <th>DTEA</th>
-      <th>FRPT</th>
-      <th>GOOG</th>
-      <th>KHC</th>
-      <th>...</th>
-      <th>PPC</th>
-      <th>RELV</th>
-      <th>RIBT</th>
-      <th>SAFM</th>
-      <th>SPY</th>
-      <th>TOF</th>
-      <th>VVI</th>
-      <th>WILC</th>
-      <th>WWAV</th>
-      <th>agg</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>2000-01-03</th>
-      <td>2.478144</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>0.604914</td>
-      <td>3.286890</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>...</td>
-      <td>5.446455</td>
-      <td>4.250875</td>
-      <td>NaN</td>
-      <td>4.003366</td>
-      <td>99.349930</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>2000-01-04</th>
-      <td>2.514410</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>0.604914</td>
-      <td>3.265820</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>...</td>
-      <td>5.504705</td>
-      <td>4.000824</td>
-      <td>NaN</td>
-      <td>4.367311</td>
-      <td>99.527641</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>2000-01-05</th>
-      <td>2.296816</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>0.626911</td>
-      <td>3.286890</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>...</td>
-      <td>5.825084</td>
-      <td>4.000824</td>
-      <td>NaN</td>
-      <td>4.124682</td>
-      <td>97.928093</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>2000-01-06</th>
-      <td>2.405613</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>0.626911</td>
-      <td>3.286890</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>...</td>
-      <td>5.970712</td>
-      <td>3.875598</td>
-      <td>NaN</td>
-      <td>4.245998</td>
-      <td>103.615379</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>2000-01-07</th>
-      <td>2.363304</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>0.626911</td>
-      <td>3.202610</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>...</td>
-      <td>5.504705</td>
-      <td>3.875598</td>
-      <td>NaN</td>
-      <td>4.124682</td>
-      <td>103.970871</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>2000-01-10</th>
-      <td>2.242418</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>0.615912</td>
-      <td>3.244750</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>...</td>
-      <td>5.533829</td>
-      <td>4.250875</td>
-      <td>NaN</td>
-      <td>4.245998</td>
-      <td>102.726746</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>2000-01-11</th>
-      <td>2.107934</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>0.615912</td>
-      <td>3.329029</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>...</td>
-      <td>5.533829</td>
-      <td>5.251082</td>
-      <td>NaN</td>
-      <td>3.912383</td>
-      <td>101.704826</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>2000-01-12</th>
-      <td>2.339126</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>0.615912</td>
-      <td>3.329029</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>...</td>
-      <td>5.970712</td>
-      <td>5.001029</td>
-      <td>NaN</td>
-      <td>3.980611</td>
-      <td>103.082207</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>2000-01-13</th>
-      <td>2.428280</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>0.621403</td>
-      <td>3.202610</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>...</td>
-      <td>6.087214</td>
-      <td>5.625959</td>
-      <td>NaN</td>
-      <td>4.306655</td>
-      <td>104.481773</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>2000-01-14</th>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>...</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-  </tbody>
-</table>
-<p>10 rows × 26 columns</p>
-</div>
+---
 
-
-
+## Step 6: Calculate Covariance Matrix
 
 ```python
-close.head(10)
+# Compute pairwise covariances between all stocks' daily returns
+covariance_matrix = daily_returns_pct.cov()
+
+print("Covariance matrix shape:", covariance_matrix.shape)
+print("\nFirst few stocks' covariance with SPY:")
+print(covariance_matrix['SPY'].head(10))
 ```
 
+**What is covariance?**
 
+$$\text{Cov}(X, Y) = \frac{1}{n-1} \sum_{i=1}^{n} (X_i - \bar{X})(Y_i - \bar{Y})$$
 
+- Positive covariance → stocks tend to move together
+- Negative covariance → stocks move in opposite directions
+- Magnitude indicates strength of relationship
 
-<div>
-<style>
-    .dataframe thead tr:only-child th {
-        text-align: right;
-    }
+SPY's covariance with itself (SPY's variance) appears on the diagonal.
 
-    .dataframe thead th {
-        text-align: left;
-    }
+---
 
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>AAPL</th>
-      <th>BETR</th>
-      <th>BUFF</th>
-      <th>CALM</th>
-      <th>CENT</th>
-      <th>CME</th>
-      <th>DTEA</th>
-      <th>FRPT</th>
-      <th>GOOG</th>
-      <th>KHC</th>
-      <th>...</th>
-      <th>PPC</th>
-      <th>RELV</th>
-      <th>RIBT</th>
-      <th>SAFM</th>
-      <th>SPY</th>
-      <th>TOF</th>
-      <th>VVI</th>
-      <th>WILC</th>
-      <th>WWAV</th>
-      <th>agg</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>2000-01-03</th>
-      <td>2.706315</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>0.637909</td>
-      <td>3.413309</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>...</td>
-      <td>5.883336</td>
-      <td>4.125650</td>
-      <td>NaN</td>
-      <td>4.245998</td>
-      <td>103.393242</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>2000-01-04</th>
-      <td>2.478144</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>0.604914</td>
-      <td>3.286890</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>...</td>
-      <td>5.446455</td>
-      <td>4.250875</td>
-      <td>NaN</td>
-      <td>4.003366</td>
-      <td>99.349930</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>2000-01-05</th>
-      <td>2.514410</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>0.604914</td>
-      <td>3.265820</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>...</td>
-      <td>5.504705</td>
-      <td>4.000824</td>
-      <td>NaN</td>
-      <td>4.367311</td>
-      <td>99.527641</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>2000-01-06</th>
-      <td>2.296816</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>0.626911</td>
-      <td>3.286890</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>...</td>
-      <td>5.825084</td>
-      <td>4.000824</td>
-      <td>NaN</td>
-      <td>4.124682</td>
-      <td>97.928093</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>2000-01-07</th>
-      <td>2.405613</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>0.626911</td>
-      <td>3.286890</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>...</td>
-      <td>5.970712</td>
-      <td>3.875598</td>
-      <td>NaN</td>
-      <td>4.245998</td>
-      <td>103.615379</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>2000-01-10</th>
-      <td>2.363304</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>0.626911</td>
-      <td>3.202610</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>...</td>
-      <td>5.504705</td>
-      <td>3.875598</td>
-      <td>NaN</td>
-      <td>4.124682</td>
-      <td>103.970871</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>2000-01-11</th>
-      <td>2.242418</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>0.615912</td>
-      <td>3.244750</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>...</td>
-      <td>5.533829</td>
-      <td>4.250875</td>
-      <td>NaN</td>
-      <td>4.245998</td>
-      <td>102.726746</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>2000-01-12</th>
-      <td>2.107934</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>0.615912</td>
-      <td>3.329029</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>...</td>
-      <td>5.533829</td>
-      <td>5.251082</td>
-      <td>NaN</td>
-      <td>3.912383</td>
-      <td>101.704826</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>2000-01-13</th>
-      <td>2.339126</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>0.615912</td>
-      <td>3.329029</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>...</td>
-      <td>5.970712</td>
-      <td>5.001029</td>
-      <td>NaN</td>
-      <td>3.980611</td>
-      <td>103.082207</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>2000-01-14</th>
-      <td>2.428280</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>0.621403</td>
-      <td>3.202610</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>...</td>
-      <td>6.087214</td>
-      <td>5.625959</td>
-      <td>NaN</td>
-      <td>4.306655</td>
-      <td>104.481773</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-  </tbody>
-</table>
-<p>10 rows × 26 columns</p>
-</div>
-
-
-
+## Step 7: Extract Market Returns and Calculate Variance
 
 ```python
-close_final.head(10)
+# SPY is located at column index 20 (S&P 500 benchmark)
+# Market benchmark index position
+MARKET_INDEX = 20  # Named constant instead of magic number
+
+# Extract market (SPY) returns
+market_returns = daily_returns_pct.iloc[:, MARKET_INDEX]
+
+# Remove NaN values (missing trading days)
+market_returns_clean = market_returns.dropna()
+
+# Calculate variance (covariance of a variable with itself)
+market_variance = market_returns_clean.var()
+
+print(f"Market (SPY) average daily return: {market_returns_clean.mean():.4f}%")
+print(f"Market variance (σ²): {market_variance:.6f}")
+print(f"Market std dev (σ): {np.sqrt(market_variance):.4f}%")
 ```
 
+**Interpreting Market Variance:**
 
+Variance tells us how much SPY's daily returns deviate from their mean. Higher variance = more volatile market environment.
 
+A market variance of ~1.48 means SPY's daily returns typically deviate by roughly ±1.2% from the mean.
 
-<div>
-<style>
-    .dataframe thead tr:only-child th {
-        text-align: right;
-    }
+---
 
-    .dataframe thead th {
-        text-align: left;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>AAPL</th>
-      <th>BETR</th>
-      <th>BUFF</th>
-      <th>CALM</th>
-      <th>CENT</th>
-      <th>CME</th>
-      <th>DTEA</th>
-      <th>FRPT</th>
-      <th>GOOG</th>
-      <th>KHC</th>
-      <th>...</th>
-      <th>PPC</th>
-      <th>RELV</th>
-      <th>RIBT</th>
-      <th>SAFM</th>
-      <th>SPY</th>
-      <th>TOF</th>
-      <th>VVI</th>
-      <th>WILC</th>
-      <th>WWAV</th>
-      <th>agg</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>2000-01-03</th>
-      <td>9.207334</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>5.454494</td>
-      <td>3.846159</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>...</td>
-      <td>8.021383</td>
-      <td>-2.945864</td>
-      <td>NaN</td>
-      <td>6.060700</td>
-      <td>4.069768</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>2000-01-04</th>
-      <td>-1.442326</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>0.000000</td>
-      <td>0.645167</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>...</td>
-      <td>-1.058186</td>
-      <td>6.249988</td>
-      <td>NaN</td>
-      <td>-8.333389</td>
-      <td>-0.178554</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>2000-01-05</th>
-      <td>9.473724</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>-3.508792</td>
-      <td>-0.641031</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>...</td>
-      <td>-5.499989</td>
-      <td>0.000000</td>
-      <td>NaN</td>
-      <td>5.882369</td>
-      <td>1.633390</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>2000-01-06</th>
-      <td>-4.522631</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>...</td>
-      <td>-2.439039</td>
-      <td>3.231140</td>
-      <td>NaN</td>
-      <td>-2.857185</td>
-      <td>-5.488844</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>2000-01-07</th>
-      <td>1.790248</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>0.000000</td>
-      <td>2.631604</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>...</td>
-      <td>8.465613</td>
-      <td>0.000000</td>
-      <td>NaN</td>
-      <td>2.941221</td>
-      <td>-0.341915</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>2000-01-10</th>
-      <td>5.390877</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>1.785807</td>
-      <td>-1.298713</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>...</td>
-      <td>-0.526290</td>
-      <td>-8.828229</td>
-      <td>NaN</td>
-      <td>-2.857185</td>
-      <td>1.211101</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>2000-01-11</th>
-      <td>6.379896</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>0.000000</td>
-      <td>-2.531639</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>...</td>
-      <td>0.000000</td>
-      <td>-19.047636</td>
-      <td>NaN</td>
-      <td>8.527156</td>
-      <td>1.004790</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>2000-01-12</th>
-      <td>-9.883692</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>0.000000</td>
-      <td>0.000000</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>...</td>
-      <td>-7.317101</td>
-      <td>5.000031</td>
-      <td>NaN</td>
-      <td>-1.714008</td>
-      <td>-1.336197</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>2000-01-13</th>
-      <td>-3.671488</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>-0.883646</td>
-      <td>3.947374</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>...</td>
-      <td>-1.913880</td>
-      <td>-11.107973</td>
-      <td>NaN</td>
-      <td>-7.570702</td>
-      <td>-1.339531</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-    <tr>
-      <th>2000-01-14</th>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>...</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>NaN</td>
-    </tr>
-  </tbody>
-</table>
-<p>10 rows × 26 columns</p>
-</div>
-
-
-
+## Step 8: Calculate Individual Stock Betas
 
 ```python
-covar = close_final.cov()
+# Calculate beta for each stock relative to the market
+# Formula: β = Cov(stock, market) / Var(market)
 
-covar.head(10)
+beta_values = {}
+
+for stock in daily_returns_pct.columns:
+    stock_returns = daily_returns_pct[stock].dropna()
+    
+    # Covariance between this stock and market
+    covariance_with_market = np.cov(stock_returns, market_returns_clean)[0, 1]
+    
+    # Beta = Covariance / Market Variance
+    beta = covariance_with_market / market_variance
+    beta_values[stock] = beta
+
+# Create DataFrame for visualization
+beta_df = pd.DataFrame(list(beta_values.items()), columns=['Stock', 'Beta'])
+beta_df = beta_df.sort_values('Beta', ascending=False)
+
+print("Top 10 stocks by beta (most market-sensitive):")
+print(beta_df.head(10))
+print("\nBottom 10 stocks by beta (least market-sensitive):")
+print(beta_df.tail(10))
 ```
 
+**The Beta Formula Explained:**
 
+$$\beta = \frac{\text{Cov}(\text{Stock Return}, \text{Market Return})}{\text{Var}(\text{Market Return})}$$
 
+This is the **CAPM beta** — the fundamental measure of systematic risk. It tells us:
+- How many basis points the stock moves for each basis point the market moves
+- How much of the stock's variance is explained by market movements (systematic vs idiosyncratic risk)
 
-<div>
-<style>
-    .dataframe thead tr:only-child th {
-        text-align: right;
-    }
+---
 
-    .dataframe thead th {
-        text-align: left;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>AAPL</th>
-      <th>BETR</th>
-      <th>BUFF</th>
-      <th>CALM</th>
-      <th>CENT</th>
-      <th>CME</th>
-      <th>DTEA</th>
-      <th>FRPT</th>
-      <th>GOOG</th>
-      <th>KHC</th>
-      <th>...</th>
-      <th>PPC</th>
-      <th>RELV</th>
-      <th>RIBT</th>
-      <th>SAFM</th>
-      <th>SPY</th>
-      <th>TOF</th>
-      <th>VVI</th>
-      <th>WILC</th>
-      <th>WWAV</th>
-      <th>agg</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>AAPL</th>
-      <td>8.895495</td>
-      <td>0.578006</td>
-      <td>0.441937</td>
-      <td>1.264006</td>
-      <td>1.455844</td>
-      <td>1.694867</td>
-      <td>0.154084</td>
-      <td>0.897254</td>
-      <td>1.836266</td>
-      <td>0.682035</td>
-      <td>...</td>
-      <td>1.098257</td>
-      <td>0.050837</td>
-      <td>0.508248</td>
-      <td>1.075730</td>
-      <td>1.623106</td>
-      <td>NaN</td>
-      <td>1.436867</td>
-      <td>-4.072703</td>
-      <td>NaN</td>
-      <td>-0.059988</td>
-    </tr>
-    <tr>
-      <th>BETR</th>
-      <td>0.578006</td>
-      <td>13.049084</td>
-      <td>1.724265</td>
-      <td>0.673226</td>
-      <td>0.774846</td>
-      <td>0.385839</td>
-      <td>0.900242</td>
-      <td>1.274864</td>
-      <td>0.475736</td>
-      <td>0.420337</td>
-      <td>...</td>
-      <td>0.827826</td>
-      <td>1.496544</td>
-      <td>-0.184863</td>
-      <td>0.628844</td>
-      <td>0.683926</td>
-      <td>NaN</td>
-      <td>0.496773</td>
-      <td>NaN</td>
-      <td>NaN</td>
-      <td>0.010206</td>
-    </tr>
-    <tr>
-      <th>BUFF</th>
-      <td>0.441937</td>
-      <td>1.724265</td>
-      <td>4.810366</td>
-      <td>0.677561</td>
-      <td>1.030790</td>
-      <td>0.451542</td>
-      <td>0.754770</td>
-      <td>1.571576</td>
-      <td>0.453654</td>
-      <td>0.606145</td>
-      <td>...</td>
-      <td>0.775815</td>
-      <td>-0.154047</td>
-      <td>-0.066875</td>
-      <td>0.730149</td>
-      <td>0.571134</td>
-      <td>NaN</td>
-      <td>0.489106</td>
-      <td>-1.036798</td>
-      <td>NaN</td>
-      <td>-0.012794</td>
-    </tr>
-    <tr>
-      <th>CALM</th>
-      <td>1.264006</td>
-      <td>0.673226</td>
-      <td>0.677561</td>
-      <td>8.314661</td>
-      <td>1.155322</td>
-      <td>1.489070</td>
-      <td>0.707045</td>
-      <td>0.577692</td>
-      <td>1.120575</td>
-      <td>0.575955</td>
-      <td>...</td>
-      <td>1.965127</td>
-      <td>0.454707</td>
-      <td>1.178936</td>
-      <td>1.308868</td>
-      <td>0.951023</td>
-      <td>NaN</td>
-      <td>1.658525</td>
-      <td>0.073846</td>
-      <td>NaN</td>
-      <td>-0.020696</td>
-    </tr>
-    <tr>
-      <th>CENT</th>
-      <td>1.455844</td>
-      <td>0.774846</td>
-      <td>1.030790</td>
-      <td>1.155322</td>
-      <td>9.922016</td>
-      <td>1.747228</td>
-      <td>0.451489</td>
-      <td>1.034990</td>
-      <td>1.403338</td>
-      <td>0.785943</td>
-      <td>...</td>
-      <td>1.042613</td>
-      <td>0.555477</td>
-      <td>1.180167</td>
-      <td>1.086711</td>
-      <td>1.372155</td>
-      <td>NaN</td>
-      <td>2.336784</td>
-      <td>-1.503545</td>
-      <td>NaN</td>
-      <td>-0.044425</td>
-    </tr>
-    <tr>
-      <th>CME</th>
-      <td>1.694867</td>
-      <td>0.385839</td>
-      <td>0.451542</td>
-      <td>1.489070</td>
-      <td>1.747228</td>
-      <td>5.369265</td>
-      <td>0.251257</td>
-      <td>0.428709</td>
-      <td>1.800073</td>
-      <td>0.432083</td>
-      <td>...</td>
-      <td>2.034710</td>
-      <td>0.561485</td>
-      <td>1.010398</td>
-      <td>1.436096</td>
-      <td>1.596907</td>
-      <td>NaN</td>
-      <td>1.986680</td>
-      <td>-0.768186</td>
-      <td>NaN</td>
-      <td>-0.125832</td>
-    </tr>
-    <tr>
-      <th>DTEA</th>
-      <td>0.154084</td>
-      <td>0.900242</td>
-      <td>0.754770</td>
-      <td>0.707045</td>
-      <td>0.451489</td>
-      <td>0.251257</td>
-      <td>22.477646</td>
-      <td>0.846963</td>
-      <td>0.130118</td>
-      <td>0.471617</td>
-      <td>...</td>
-      <td>1.129738</td>
-      <td>0.008399</td>
-      <td>-0.534185</td>
-      <td>0.627799</td>
-      <td>0.356360</td>
-      <td>NaN</td>
-      <td>0.467363</td>
-      <td>2.951310</td>
-      <td>NaN</td>
-      <td>0.018272</td>
-    </tr>
-    <tr>
-      <th>FRPT</th>
-      <td>0.897254</td>
-      <td>1.274864</td>
-      <td>1.571576</td>
-      <td>0.577692</td>
-      <td>1.034990</td>
-      <td>0.428709</td>
-      <td>0.846963</td>
-      <td>10.491278</td>
-      <td>0.490234</td>
-      <td>0.897895</td>
-      <td>...</td>
-      <td>0.846426</td>
-      <td>-0.225623</td>
-      <td>0.576959</td>
-      <td>0.597092</td>
-      <td>0.642696</td>
-      <td>NaN</td>
-      <td>0.645580</td>
-      <td>-2.743662</td>
-      <td>NaN</td>
-      <td>-0.037451</td>
-    </tr>
-    <tr>
-      <th>GOOG</th>
-      <td>1.836266</td>
-      <td>0.475736</td>
-      <td>0.453654</td>
-      <td>1.120575</td>
-      <td>1.403338</td>
-      <td>1.800073</td>
-      <td>0.130118</td>
-      <td>0.490234</td>
-      <td>3.621130</td>
-      <td>0.754626</td>
-      <td>...</td>
-      <td>1.003766</td>
-      <td>0.260870</td>
-      <td>0.373841</td>
-      <td>0.882783</td>
-      <td>1.277741</td>
-      <td>NaN</td>
-      <td>1.370079</td>
-      <td>-1.270653</td>
-      <td>NaN</td>
-      <td>-0.024299</td>
-    </tr>
-    <tr>
-      <th>KHC</th>
-      <td>0.682035</td>
-      <td>0.420337</td>
-      <td>0.606145</td>
-      <td>0.575955</td>
-      <td>0.785943</td>
-      <td>0.432083</td>
-      <td>0.471617</td>
-      <td>0.897895</td>
-      <td>0.754626</td>
-      <td>1.638744</td>
-      <td>...</td>
-      <td>0.809656</td>
-      <td>0.160541</td>
-      <td>-0.301475</td>
-      <td>0.658950</td>
-      <td>0.591592</td>
-      <td>NaN</td>
-      <td>0.439923</td>
-      <td>-1.357823</td>
-      <td>NaN</td>
-      <td>0.008824</td>
-    </tr>
-  </tbody>
-</table>
-<p>10 rows × 26 columns</p>
-</div>
-
-
-
+## Step 9: Interpret Beta Results and Build Trading Strategy
 
 ```python
-market_temp = close_final.iloc[:,[20]]
-market = market_temp.dropna()
+# Categorize stocks by beta range
+beta_df['Category'] = pd.cut(beta_df['Beta'], 
+                              bins=[-np.inf, 0.8, 1.0, 1.2, np.inf],
+                              labels=['Defensive', 'Market-Tracking', 'Aggressive', 'Very Aggressive'])
 
+print("Beta Distribution by Category:")
+print(beta_df['Category'].value_counts().sort_index())
+
+# Example strategy: Construct a hedged portfolio
+print("\n" + "="*60)
+print("TRADING STRATEGY EXAMPLE: Market-Neutral Hedge")
+print("="*60)
+
+# Select defensive and aggressive stocks
+defensive_stocks = beta_df[beta_df['Category'] == 'Defensive'].head(3)['Stock'].tolist()
+aggressive_stocks = beta_df[beta_df['Category'] == 'Aggressive'].head(3)['Stock'].tolist()
+
+print(f"\nDefensive positions (low β, downside protection):")
+for stock in defensive_stocks:
+    beta = beta_df[beta_df['Stock'] == stock]['Beta'].values[0]
+    print(f"  {stock}: β = {beta:.3f} — Long position")
+
+print(f"\nAggresssive positions (high β, upside amplification):")
+for stock in aggressive_stocks:
+    beta = beta_df[beta_df['Stock'] == stock]['Beta'].values[0]
+    print(f"  {stock}: β = {beta:.3f} — Short position (hedge)")
+
+# Calculate net portfolio beta
+portfolio_beta = np.mean([beta_df[beta_df['Stock'] == s]['Beta'].values[0] for s in defensive_stocks]) \
+                 - np.mean([beta_df[beta_df['Stock'] == s]['Beta'].values[0] for s in aggressive_stocks])
+
+print(f"\nPortfolio Net Beta: {portfolio_beta:.3f}")
+if portfolio_beta < 0.2:
+    print("✓ Market-neutral: Protected from market swings while capturing alpha")
+elif portfolio_beta < 0.8:
+    print("✓ Defensively positioned: Reduced downside in market correction")
+else:
+    print("⚠ Bullish bias: Amplifies market movements (higher risk)")
 ```
 
+**Key Insights:**
 
-```python
-#total = sum(market)
-mean_value = pd.DataFrame.mean(market)
-print(mean_value)
-variance = pd.DataFrame.var(market)
-print(variance)
-market.head(10)
-```
+1. **Beta clustering**: Most stocks have β between 0.8–1.2 (market-like behavior)
+2. **Outliers matter**: A few stocks with very high/low beta significantly impact portfolio risk
+3. **Hedging principle**: Pair longs and shorts by beta to neutralize market risk
+4. **Regulatory risk**: Market conditions change; beta is historical, not predictive
 
-    SPY   -0.011492
-    dtype: float64
-    SPY    1.480824
-    dtype: float64
+---
 
+## Limitations & Assumptions
 
+- **Look-back bias**: Historical beta doesn't guarantee future relationships
+- **Regime changes**: Beta shifts during market crises (loses predictive power in tail events)
+- **Liquidity mismatch**: Works best for large-cap stocks with continuous trading
+- **Non-linear relationships**: Assumes linear correlation with market (fails for tail risk hedging)
 
+---
 
+## Conclusion
 
-<div>
-<style>
-    .dataframe thead tr:only-child th {
-        text-align: right;
-    }
+Beta is your **first line of defense** in portfolio construction. Use it to:
+- **Classify risk**: Know which stocks amplify or dampen market moves
+- **Hedge efficiently**: Pair high-β positions with low-β shorts
+- **Optimize allocation**: Match portfolio beta to your risk tolerance
+- **Monitor drift**: Track beta changes to detect regime shifts
 
-    .dataframe thead th {
-        text-align: left;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>SPY</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>2000-01-03</th>
-      <td>4.069768</td>
-    </tr>
-    <tr>
-      <th>2000-01-04</th>
-      <td>-0.178554</td>
-    </tr>
-    <tr>
-      <th>2000-01-05</th>
-      <td>1.633390</td>
-    </tr>
-    <tr>
-      <th>2000-01-06</th>
-      <td>-5.488844</td>
-    </tr>
-    <tr>
-      <th>2000-01-07</th>
-      <td>-0.341915</td>
-    </tr>
-    <tr>
-      <th>2000-01-10</th>
-      <td>1.211101</td>
-    </tr>
-    <tr>
-      <th>2000-01-11</th>
-      <td>1.004790</td>
-    </tr>
-    <tr>
-      <th>2000-01-12</th>
-      <td>-1.336197</td>
-    </tr>
-    <tr>
-      <th>2000-01-13</th>
-      <td>-1.339531</td>
-    </tr>
-    <tr>
-      <th>2000-01-18</th>
-      <td>-0.807844</td>
-    </tr>
-  </tbody>
-</table>
-</div>
+In the modern market, combine beta with factor exposure (momentum, value, quality) for a complete risk framework.
 
 
-
-
-```python
-covartotal = pd.DataFrame.sum(covar)
-print(covartotal)
-print(variance[[0][0]])
-
-```
-
-    AAPL    24.623828
-    BETR    26.986567
-    BUFF    16.812453
-    CALM    28.138761
-    CENT    31.026041
-    CME     26.674849
-    DTEA    34.010689
-    FRPT    22.516264
-    GOOG    20.357582
-    KHC     12.087360
-    LANC    15.664106
-    LWAY    24.102763
-    MSFT    20.212742
-    NUTR     0.000000
-    PF       5.824655
-    POST    11.109943
-    PPC     67.005785
-    RELV    39.625424
-    RIBT    49.511365
-    SAFM    30.833337
-    SPY     18.832532
-    TOF      0.000000
-    VVI     30.889375
-    WILC    -4.233405
-    WWAV     0.000000
-    agg     -0.349838
-    dtype: float64
-    1.48082445212
-
-
-
-```python
-beta_appl = (covartotal/(variance[[0][0]] ** 2 ))
-
-```
-
-
-```python
-beta_appl.head(100)
-```
-
-
-
-
-    AAPL    11.229190
-    BETR    12.306668
-    BUFF     7.666973
-    CALM    12.832102
-    CENT    14.148787
-    CME     12.164516
-    DTEA    15.509874
-    FRPT    10.268078
-    GOOG     9.283656
-    KHC      5.512191
-    LANC     7.143293
-    LWAY    10.991569
-    MSFT     9.217605
-    NUTR     0.000000
-    PF       2.656214
-    POST     5.066461
-    PPC     30.556608
-    RELV    18.070359
-    RIBT    22.578638
-    SAFM    14.060908
-    SPY      8.588188
-    TOF      0.000000
-    VVI     14.086463
-    WILC    -1.930557
-    WWAV     0.000000
-    agg     -0.159537
-    dtype: float64
-
-
-
-
-```python
-plt.plot(beta_appl)
-```
-![png](https://github.com/avnit/ContractWork/blob/master/output_14_1.png)
