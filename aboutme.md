@@ -6,8 +6,7 @@ subtitle: Cloud security architect, AI tinkerer, homelab enthusiast
 
 Hi, I'm **Avnit Bambah**.
 
-I'm a **Customer Engineer (AI & Security Specialist) at Google Cloud** and the
-**CTO/Founder of ASB Solutions Group Inc.**, a Google Cloud security consultancy.
+I'm a **Customer Engineer (AI & Security Specialist) at Google Cloud**.
 I spend my days deep in GCP security architecture — VPC Service Controls,
 Security Command Center, IAM, Identity-Aware Proxy, and Workload Identity
 Federation — and helping organizations build secure, production-ready cloud
@@ -28,7 +27,7 @@ platforms.
 ### Find me
 
 - GitHub: [github.com/avnit](https://github.com/avnit)
-- GitLab: [gitlab.com/avnit](https://gitlab.com/avnit)
-- Email: [abambah@gmail.com](mailto:abambah@gmail.com)
+- LinkedIn: [linkedin.com/avnit](https://www.linkedin.com/in/avnit/)
+- Medium: [Medium/@avnitbambah](https://medium.com/@avnitbambah)
 
 Check out the [Projects](/tags#projects) tag for a tour of my public repos.
