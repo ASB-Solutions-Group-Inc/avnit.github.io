@@ -1,3 +1,10 @@
+---
+layout: post
+title: Kickstarter Data Analysis
+subtitle: Sample data analysis project with Kaggle data
+tags: [python, data-analysis]
+comments: false
+---
 
 #### KS Sample data analysis project 
 ###### Data file from kaggle project.

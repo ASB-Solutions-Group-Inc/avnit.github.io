@@ -10,10 +10,10 @@
 ############################
 
 # Name of website
-title: My website
+title: Avnit Bambah
 
 # Your name to show in the footer
-author: Some Person
+author: Avnit Bambah
 
 ###############################################
 # --- List of links in the navigation bar --- #
@@ -21,10 +21,8 @@ author: Some Person
 
 navbar-links:
   About Me: "aboutme"
-  Resources:
-    - Beautiful Jekyll: "https://beautifuljekyll.com"
-    - Learn markdown: "https://www.markdowntutorial.com/"
-  Author's home: "https://deanattali.com"
+  Projects: "tags#projects"
+  GitHub: "https://github.com/avnit"
 
 ################
 # --- Logo --- #
@@ -50,14 +48,10 @@ round-avatar: true
 # You can change the order that they show up on the page by changing the order here.
 # Uncomment the links you want to show and add your information to each one.
 social-network-links:
-  email: "someone@example.com"
+  email: "abambah@gmail.com"
   rss: true  # remove this line if you don't want to show an RSS link at the bottom
-  facebook: deanattali
-  github: daattali
-  twitter: daattali
-  patreon: DeanAttali
-  youtube: "@daattali"
-  whatsapp: 15551212
+  github: avnit
+  gitlab: avnit
 #  medium: yourname
 #  reddit: yourname or r/yoursubreddit
 #  linkedin: daattali
@@ -86,7 +80,7 @@ social-network-links:
 
 # If you want your website to generate an RSS feed, provide a description
 # The URL for the feed will be https://<your_website>/feed.xml
-rss-description: This website is a virtual proof that I'm awesome
+rss-description: Avnit Bambah — cloud security architecture, AI agents, and homelab projects
 
 ###########################
 # --- General options --- #
@@ -102,7 +96,7 @@ share-links-active:
 
 # How to display the link to your website in the footer
 # Remove this if you don't want a link in the footer
-url-pretty: "MyWebsite.com"
+url-pretty: "avnit.github.io"
 
 # Add the website title to the title of every page
 title-on-all-pages: true
@@ -260,7 +254,7 @@ date_format: "%B %-d, %Y"
 #################################################################################
 
 # Output options (more information on Jekyll's site)
-timezone: "America/Toronto"
+timezone: "America/Los_Angeles"
 markdown: kramdown
 highlighter: rouge
 permalink: /:year-:month-:day-:title/

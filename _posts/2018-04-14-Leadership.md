@@ -1,3 +1,10 @@
+---
+layout: post
+title: Leadership
+subtitle: Notes on leaders, mis-leaders, and followers
+tags: [leadership]
+comments: false
+---
 ### 1. Leadership
 People are not leaders just because they are in charge of others. After weighing the thoughts of hundreds of researchers and ethicists, the authors define leadership as “a power-laden, value-based, and ethically driven relationship between leaders and followers who share a common vision and accomplish real changes that reflect their mutual purpose and goals.” In other words, while power is the authority to direct the activities of others, leaders define the visions of their organizations based on shared values and interests. The goal of leadership is to implement progress while demonstrating ethics, virtue, and good character.
 ### 2. Mis-Leaders and Followers

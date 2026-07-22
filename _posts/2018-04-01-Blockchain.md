@@ -1,3 +1,10 @@
+---
+layout: post
+title: Blockchain
+subtitle: Distributed record keeping for innovation and governance
+tags: [blockchain]
+comments: false
+---
 Blockchain is an elegantly distributed cryptographic solution for the transformation of record keeping across any industry. Blockchain satisfies two very important needs that help industries stay ahead of the game. First is the need for innovation and second is the need for governance. In addition, Blockchain technologies help in lowering the cost, increasing the speed and empowering their people. 
 
 This is unique and so important because very few other technologies can fill these needs. It increases trust, durability, and security. In the arena of BIG data, where the exchange of data is incredibly and increasingly frequent, the need for governance is becoming extremely prevalent.

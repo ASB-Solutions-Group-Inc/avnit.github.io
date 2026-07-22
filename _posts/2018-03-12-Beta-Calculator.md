@@ -1,3 +1,10 @@
+---
+layout: post
+title: Beta Calculator
+subtitle: Predicting stock beta with Python
+tags: [python, finance, machine-learning]
+comments: false
+---
 
 #  Beta Calculator
 ## Author : Avnit Bambah
