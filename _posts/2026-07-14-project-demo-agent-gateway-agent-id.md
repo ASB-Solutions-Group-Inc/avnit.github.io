@@ -21,12 +21,15 @@ This demo shows how an AI agent running on Google Cloud obtains a verifiable, sh
 
 It answers three questions security architects ask about agentic AI:
 
-Who is the agent? — Every agent gets its own identity, not a shared key. (Agent Identity / dedicated service accounts + Workload Identity Federation.)
-How does a human's identity reach the agent? — Workforce Identity Federation brings Okta / Entra ID users into GCP without minting GCP passwords, so the agent can act on-behalf-of an authenticated human.
-What can the agent do, and to what? — The Agent Gateway brokers every Gemini Enterprise call, attaches the agent's identity, and enforces IAM + policy before the model is ever reached.
+***Who is the agent?*** 
+    — Every agent gets its own identity, not a shared key. (Agent Identity / dedicated service accounts + Workload Identity Federation.)
+*** How does a human's identity reach the agent? ***
+    — Workforce Identity Federation brings Okta / Entra ID users into GCP without minting GCP passwords, so the agent can act on-behalf-of an authenticated human.
+*** What can the agent do, and to what? *** 
+    —  The Agent Gateway brokers every Gemini Enterprise call, attaches the agent's identity, and enforces IAM + policy before the model is ever reached.
 ⚠️ Demo / reference code. Values are placeholders. Nothing here provisions live billing-bearing resources until you supply real IDs in terraform.tfvars. Review before running in any real project.
 
-![Agent Identity](image.png)
+![Agent Identity Architecture Diagram](/assets/img/agent-identity-diagram.png)
 
 **Language:** Jupyter Notebook  
 **Source code:** [github.com/avnit/demo-agent-gateway-agent-id](https://github.com/avnit/demo-agent-gateway-agent-id)
