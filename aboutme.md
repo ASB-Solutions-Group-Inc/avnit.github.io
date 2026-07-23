@@ -4,6 +4,9 @@ title: About me
 subtitle: Cloud security architect, AI tinkerer, homelab enthusiast
 ---
 
+<img src="/assets/img/avnit-photo.jpg" alt="Avnit Bambah at the Google Cloud Security booth, RSA Conference" style="max-width: 380px; width: 100%; border-radius: 20px; display: block; margin: 0 auto 0.5rem; box-shadow: 0 12px 32px rgba(18,19,23,0.12);" />
+<p style="text-align: center; font-size: 0.85rem; color: #7c7f87; margin-bottom: 2rem;">At the Google Cloud Security booth, RSA Conference</p>
+
 Hi, I'm **Avnit Bambah**.
 
 I'm a **Customer Engineer (AI & Security Specialist) at Google Cloud**.
