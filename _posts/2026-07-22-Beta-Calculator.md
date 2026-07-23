@@ -1,30 +1,28 @@
 ---
 layout: post
-title: Beta Calculator
-subtitle: Quantifying systematic risk and building hedging-aware trading strategies
+title: "Beta Calculator"
+subtitle: "Quantifying systematic risk and building hedging-aware trading strategies"
 tags: [python, finance, machine-learning, portfolio-analysis]
 comments: false
 ---
 
-# Beta Calculator: Quantifying Systematic Market Risk
+Beta measures how much a stock moves when the market moves. This walkthrough computes beta from historical returns in Python, then uses it to classify risk and build hedging-aware portfolios.
 
-**Author:** Avnit Bambah  
-**Date:** 03/12/2018 (Updated)  
-**Concept:** Computing stock beta to understand systematic risk and optimize portfolio exposure
+*Author: Avnit Bambah — originally written 03/12/2018 (updated).*
 
-## What is Beta and Why Does It Matter for Trading?
+## What Is Beta and Why Does It Matter for Trading?
 
 Beta (β) measures a stock's **systematic risk** relative to the market index (typically S&P 500 / SPY). It answers the core question:
 
 > **How much does this stock move when the market moves?**
 
-### Beta Interpretation:
+### Interpreting Beta
 - **β = 1.0**: Stock moves in lockstep with the market. For every 1% the market moves, the stock moves ~1%.
 - **β > 1.0**: Stock is more volatile than the market (amplified moves). Higher risk, higher potential reward.
 - **β < 1.0**: Stock is less volatile than the market (dampened moves). Lower volatility.
 - **β < 0.0**: Stock moves inverse to the market (rare; useful for hedging).
 
-### Trading Strategy Implications:
+### Trading Strategy Implications
 
 **Defensive Portfolio (Lower Beta):**
 - Choose β < 0.8 stocks for downside protection
