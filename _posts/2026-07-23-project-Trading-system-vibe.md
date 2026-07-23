@@ -16,8 +16,6 @@ comments: false
 **Author:** avnit bambah
 **Audience:** product owner (you)
 
-> Note: this PRD lives on the `claude/stock-trading-app-research-aIPdI` branch only.
-
 
 ---
 
