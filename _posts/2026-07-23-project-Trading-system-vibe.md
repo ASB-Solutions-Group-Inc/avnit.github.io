@@ -10,11 +10,10 @@ comments: false
 
 
 
-# Stock Research & Trading Assistant — PRD (v0.1, for review)
-
+# Stock Research & Trading Assistant 
 **Status:** Draft for review
 **Date:** 2026-05-16
-**Author:** research compiled by Claude
+**Author:** avnit bambah
 **Audience:** product owner (you)
 
 > Note: this PRD lives on the `claude/stock-trading-app-research-aIPdI` branch only.
