@@ -1,19 +1,18 @@
 ---
 layout: post
-title: Kickstarter Data Analysis
-subtitle: Sample data analysis project with Kaggle data
-tags: [python, data-analysis]
+title: "Kickstarter Data Analysis"
+subtitle: "Grouping, reporting, and 2D/3D plotting with Kaggle data"
+tags: [python, data-analysis, pandas]
 comments: false
 ---
 
-#### KS Sample data analysis project 
-###### Data file from kaggle project.
-###### Author: Avnit Bambah
-###### Date : 04/04/2018 
+A sample data analysis project using the Kickstarter dataset from Kaggle. The goal is to practice grouping a dataset, creating summary reports, and plotting the results in 2D and 3D with pandas and matplotlib.
 
-### Learn how to plot in 2d and 3d. 
-#### Group by the data set and create reports.
+*Author: Avnit Bambah — 04/04/2018. Data file from a Kaggle project.*
 
+## Setup and Imports
+
+We start by importing the standard data analysis stack: pandas for data manipulation, NumPy for numerical work, and matplotlib for plotting.
 
 ```python
 %matplotlib inline 
@@ -24,6 +23,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 ```
 
+## Load the Data
+
+Read the Kickstarter CSV into a DataFrame and preview the first ten rows to get a feel for the columns.
 
 ```python
 # read in all our data
@@ -31,6 +33,9 @@ ks_data = pd.read_csv("data/ks-data.csv")
 ks_data.head(10)
 ```
 
+## Group by Category, Currency, and Pledged Amount
+
+Grouping on `main_category`, `currency`, and `pledged` produces a summed report of goals, backers, and pledged dollars for each combination.
 
 ```python
 main_data = ks_data.groupby(['main_category','currency','pledged']).sum().fillna(0)
@@ -178,6 +183,10 @@ main_data.head(10)
 
 
 
+
+## Aggregate Pledges by Deadline
+
+Next we group by project deadline and aggregate the real USD pledged amounts, computing the sum, minimum, and maximum per day.
 
 ```python
 grouped = ks_data.groupby('deadline').agg({"usd_pledged_real": [sum,min,max]})
@@ -596,6 +605,10 @@ grouped.tail(10)
 
 
 
+## Plot in 2D
+
+A simple line plot of the aggregated series shows how pledged totals vary across deadlines.
+
 ```python
 plt.plot(grouped)
 ```
@@ -614,6 +627,8 @@ plt.plot(grouped)
 
 
 
+A contour plot gives an alternative view of the same aggregated data.
+
 ```python
 plt.contour(grouped)
 ```
@@ -628,6 +643,11 @@ plt.contour(grouped)
 
 ![png](output_6_1.png)
 
+## Plot in 3D
+
+Finally, matplotlib's `mplot3d` toolkit lets us render the contour in three dimensions.
+
+```python
 # 3d ploting 
 from mpl_toolkits.mplot3d import axes3d
 from matplotlib import cm 
@@ -636,3 +656,8 @@ fig = plt.figure()
 ax = fig.gca(projection='3d')
 cset = ax.contour(grouped,grouped,grouped)
 plt.show()
+```
+
+## Wrapping Up
+
+With just `groupby`, `agg`, and a few matplotlib calls, we went from a raw Kaggle CSV to grouped reports and 2D/3D visualizations — a compact template for quick exploratory analysis.
