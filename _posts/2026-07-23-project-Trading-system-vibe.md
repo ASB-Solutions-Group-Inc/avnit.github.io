@@ -6,8 +6,7 @@
 **Audience:** product owner (you)
 
 > Note: this PRD lives on the `claude/stock-trading-app-research-aIPdI` branch only.
-> The Argonaut Claims repo is unrelated; this is a deliverable parked here for review,
-> not code intended to merge to `main`.
+
 
 ---
 
