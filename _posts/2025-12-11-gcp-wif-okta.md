@@ -4,6 +4,7 @@ title: "Unlocking Secure Access to Google Cloud with Workload Identity Federatio
 subtitle: "Keyless authentication to GCP — federate Okta identities and retire service account keys"
 tags: [google-cloud, security, identity, medium]
 comments: false
+canonical-url: https://medium.com/@avnitbambah/unlocking-secure-access-to-google-cloud-with-workload-identity-federation-and-okta-5bc67b8e4d56
 ---
 
 > Originally published on [Medium](https://medium.com/@avnitbambah/unlocking-secure-access-to-google-cloud-with-workload-identity-federation-and-okta-5bc67b8e4d56).

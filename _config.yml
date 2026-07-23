@@ -121,7 +121,15 @@ edit_page_button: true
 navbar-var-length: false
 
 # The keywords to associate with your website, for SEO purposes
-#keywords: "my,list,of,keywords"
+keywords: "cloud security, google cloud, gcp security, vpc service controls, workload identity federation, ai agents, agent development kit, mcp, homelab, proxmox, self-hosted, esp32, python, terraform"
+
+# Default social sharing image for pages without their own (1200x630)
+share-img: "/assets/img/share-card.png"
+
+# Search engine ownership verification tokens — paste yours here after adding
+# the site in Google Search Console / Bing Webmaster Tools (HTML-tag method)
+#google-site-verification: ""
+#bing-site-verification: ""
 
 ######################################
 # --- Colours / background image --- #

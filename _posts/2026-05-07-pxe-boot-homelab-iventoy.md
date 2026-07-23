@@ -4,6 +4,7 @@ title: "PXE Booting Your Homelab with iVentoy, Unraid, and UniFi"
 subtitle: "Boot any OS over the network — no more USB sticks"
 tags: [homelab, unraid, networking, medium]
 comments: false
+canonical-url: https://medium.com/@avnitbambah/pxe-booting-your-homelab-with-iventoy-unraid-and-unifi-boot-any-os-over-the-network-45757230ec0c
 ---
 
 > Originally published on [Medium](https://medium.com/@avnitbambah/pxe-booting-your-homelab-with-iventoy-unraid-and-unifi-boot-any-os-over-the-network-45757230ec0c).

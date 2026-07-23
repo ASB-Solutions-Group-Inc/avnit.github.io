@@ -4,6 +4,7 @@ title: "The 2026 Investment Thesis: Navigating a New Market Paradigm"
 subtitle: "How I'm thinking about markets, sectors, and risk going into 2026"
 tags: [investing, finance, medium]
 comments: false
+canonical-url: https://medium.com/@avnitbambah/the-2026-investment-thesis-navigating-a-new-market-paradigm-851c56bc7a7c
 ---
 
 > Originally published on [Medium](https://medium.com/@avnitbambah/the-2026-investment-thesis-navigating-a-new-market-paradigm-851c56bc7a7c).
