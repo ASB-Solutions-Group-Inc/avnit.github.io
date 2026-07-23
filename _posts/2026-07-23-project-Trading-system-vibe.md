@@ -26,8 +26,7 @@ The assistant ingests company filings, market data, and "smart-money" signals,
 proposes trades (including options strategies), and — with explicit human approval —
 places them through a brokerage. Long-term broker target is **Interactive Brokers**.
 
-To get a quick win, **Phase 0 ships in ~1 week on Alpaca paper trading**, not IBKR.
-Alpaca's API and Level-3 multi-leg options work without a desktop gateway and
+To get a quick win, **Phase 0 ships in ~1 week on IBKR paper trading**.
 let us prove the end-to-end research → propose → approve → execute loop before we
 take on IBKR's heavier integration. IBKR comes online in Phase 2.
 
@@ -109,7 +108,7 @@ Full source briefs are in §10. Headlines:
 | LLM SDK | Claude Agent SDK (deep MCP support, `always_ask` permission) | — | Reuse. |
 
 What this leaves us to build:
-1. The **broker abstraction** with Alpaca + IBKR adapters.
+1. The **broker abstraction** IBKR adapters.
 2. The **thesis → options strategy** reasoning layer (rules + LLM, on top of optionlab).
 3. The **research graph** that pulls together 10-K sections, fundamentals, recent news, and produces a one-page thesis.
 4. The **approval ticket + audit log** that records every recommendation, decision, and fill.
