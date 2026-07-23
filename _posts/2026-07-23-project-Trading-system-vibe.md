@@ -1,3 +1,14 @@
+layout: post
+title: How This Site Is Built
+subtitle: The architecture behind avnit.asbblog.com — Jekyll, GitHub Pages, and an AI-assisted workflow
+gh-repo: ASB-Solutions-Group-Inc/avnit.github.io
+gh-badge: [star, fork]
+tags: [architecture, jekyll, github-pages, projects]
+comments: false
+
+
+
+
 # Stock Research & Trading Assistant — PRD (v0.1, for review)
 
 **Status:** Draft for review
