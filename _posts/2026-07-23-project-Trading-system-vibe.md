@@ -1,11 +1,12 @@
+---
 layout: post
-title: How This Site Is Built
-subtitle: The architecture behind avnit.asbblog.com — Jekyll, GitHub Pages, and an AI-assisted workflow
-gh-repo: ASB-Solutions-Group-Inc/avnit.github.io
+title: Stock Research & Trading Assistant
+subtitle: The architecture behind Stock Research , Trading Assistant, and an AI-assisted workflow
+gh-repo: github.com/avnit/stock-trading-assistance
 gh-badge: [star, fork]
-tags: [architecture, jekyll, github-pages, projects]
+tags: [architecture, trading , stock research, trading assistanct, ai assisted workflow, projects]
 comments: false
-
+---
 
 
 
