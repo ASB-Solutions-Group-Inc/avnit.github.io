@@ -1,14 +1,17 @@
 ---
 layout: post
-title: nodejs
-subtitle: Node.js experiments
+title: "Node.js Experiments"
+subtitle: "Early server-side JavaScript scratch work"
 gh-repo: avnit/nodejs
-gh-badge: [star, fork, follow]
-tags: [projects, javascript]
+gh-badge: [star, fork]
+tags: [projects, javascript, learning]
 comments: false
 ---
 
-Server-side JavaScript experiments with Node.js.
+A scratch repo of server-side JavaScript experiments with Node.js, dating back to early 2020. It has a one-line README and no pretensions — this was a workbench for trying out Node patterns rather than a project meant for anyone else.
 
-**Language:** JavaScript  
+I keep it around as part of the archaeological record: repos like this mark the point where a technology went from "reading about it" to "actually typing it". The real Node/TypeScript work came later, in projects like my Cloudflare-based chat agent.
+
+**Language:** JavaScript
+
 **Source code:** [github.com/avnit/nodejs](https://github.com/avnit/nodejs)
