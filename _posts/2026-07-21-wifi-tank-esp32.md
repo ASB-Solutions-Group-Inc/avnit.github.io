@@ -4,6 +4,7 @@ title: "Build a Wi-Fi Controlled Tank With an ESP32"
 subtitle: "From bare ESP32 dev board to a browser-driven RC tank — motors, PWM, and a web UI over Wi-Fi"
 tags: [esp32, iot, electronics, medium]
 comments: false
+canonical-url: https://medium.com/@avnitbambah/build-a-wi-fi-controlled-tank-with-an-esp32-cfba58669917
 ---
 
 > Originally published on [Medium](https://medium.com/@avnitbambah/build-a-wi-fi-controlled-tank-with-an-esp32-cfba58669917).

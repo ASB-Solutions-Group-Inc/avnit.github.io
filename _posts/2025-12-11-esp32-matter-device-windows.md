@@ -4,6 +4,7 @@ title: "Build a Matter Device with ESP32 on Windows"
 subtitle: "Getting the ESP-Matter SDK working on a Windows machine, end to end"
 tags: [esp32, matter, smart-home, iot, medium]
 comments: false
+canonical-url: https://medium.com/@avnitbambah/build-a-matter-device-with-esp32-and-windows-machine-50148c16c584
 ---
 
 > Originally published on [Medium](https://medium.com/@avnitbambah/build-a-matter-device-with-esp32-and-windows-machine-50148c16c584).
