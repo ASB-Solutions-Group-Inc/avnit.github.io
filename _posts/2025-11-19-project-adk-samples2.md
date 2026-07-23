@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "ADK Samples"
+title: "ADK Samples 2 — Agent Development Kit Experiments"
 subtitle: "Ready-to-use agents built on Google's Agent Development Kit"
 gh-repo: avnit/adk-samples2
 gh-badge: [star, fork]
