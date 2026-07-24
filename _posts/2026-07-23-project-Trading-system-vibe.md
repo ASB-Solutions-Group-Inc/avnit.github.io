@@ -1,19 +1,20 @@
 ---
 layout: post
 title: Stock Research & Trading Assistant
-subtitle: The architecture behind Stock Research , Trading Assistant, and an AI-assisted workflow
-gh-repo: github.com/avnit/stock-trading-assistance
+subtitle: The architecture behind stock research, a trading assistant, and an AI-assisted workflow
+gh-repo: github.com/avnit/stock-trading-assistant
 gh-badge: [star, fork]
-tags: [architecture, trading , stock research, trading assistanct, ai assisted workflow, projects]
+tags: [architecture, trading, stock research, trading assistant, ai assisted workflow, projects]
 comments: false
 ---
 
 
 
-# Stock Research & Trading Assistant 
-**Status:** Draft for review
-**Date:** 2026-05-16
-**Author:** avnit bambah
+# Stock Research & Trading Assistant
+
+**Status:** Draft for review  
+**Date:** 2026-05-16  
+**Author:** Avnit Bambah  
 **Audience:** product owner (you)
 
 
@@ -26,8 +27,8 @@ The assistant ingests company filings, market data, and "smart-money" signals,
 proposes trades (including options strategies), and — with explicit human approval —
 places them through a brokerage. Long-term broker target is **Interactive Brokers**.
 
-To get a quick win, **Phase 0 ships in ~1 week on IBKR paper trading**.
-let us prove the end-to-end research → propose → approve → execute loop before we
+To get a quick win, **Phase 0 ships in ~1 week on Alpaca paper trading**.
+Let us prove the end-to-end research → propose → approve → execute loop before we
 take on IBKR's heavier integration. IBKR comes online in Phase 2.
 
 The plan leans heavily on existing OSS — almost every box on the wishlist already has
@@ -108,7 +109,7 @@ Full source briefs are in §10. Headlines:
 | LLM SDK | Claude Agent SDK (deep MCP support, `always_ask` permission) | — | Reuse. |
 
 What this leaves us to build:
-1. The **broker abstraction** IBKR adapters.
+1. The **broker abstraction** with Alpaca and IBKR adapters.
 2. The **thesis → options strategy** reasoning layer (rules + LLM, on top of optionlab).
 3. The **research graph** that pulls together 10-K sections, fundamentals, recent news, and produces a one-page thesis.
 4. The **approval ticket + audit log** that records every recommendation, decision, and fill.
