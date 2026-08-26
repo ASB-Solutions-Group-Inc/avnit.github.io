@@ -1,0 +1,3 @@
+Create a slides presentation for a customer meeting covering these topics Access Governance and Sprawl Remediation: Structuring department-level groups, eliminating excessive org-level grants, and leveraging IAM Recommender, Policy Analyzer, and Policy Troubleshooter.  
+2. Observability: Cloud Audit Logs architecture, log routing, and compliance monitoring workflows.  
+3. Perimeter and Agent Security: Identity-Aware Proxy (IAP), VPC Service Controls, and emerging AI Agent Identity governance.
