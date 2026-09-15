@@ -1,4 +1,3 @@
----
 
 # Managing Unraid & Docker with AI Agents: Integrating an Unraid MCP Server with Claude Code and Hermes Agent
 
@@ -8,8 +7,6 @@
 
 **Category**: Homelab, AI Systems & Automation
 
-
----
 
 ### Introduction
 
