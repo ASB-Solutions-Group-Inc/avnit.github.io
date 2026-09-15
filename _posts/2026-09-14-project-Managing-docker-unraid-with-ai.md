@@ -8,9 +8,6 @@
 
 **Category**: Homelab, AI Systems & Automation
 
-**Target Blog**: [avnit.asbblog.com](https://avnit.asbblog.com)
-
-**Reference Repository**: [github.com/avnit/mcp-proxmox-unraid-agent](https://www.google.com/search?q=https://github.com/avnit/mcp-proxmox-unraid-agent)
 
 ---
 
