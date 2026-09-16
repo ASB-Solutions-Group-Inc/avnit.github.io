@@ -25,10 +25,6 @@ This post details how to build and deploy an **Unraid MCP Server** and connect i
 
 The MCP server sits between your AI client and Unraid’s management APIs, translating high-level model tool calls into scoped API requests or Docker engine commands.
 
-
-![A clean, modern architecture diagram showing two client blocks at the top: 'Claude Code (Local Workstation / CLI)' and 'Hermes Agent (Debian VM / Telegram & Discord)'. Both clients connect downward via 'Model Context Protocol' arrows to a central box titled 'Unraid MCP Server (FastMCP / Python Container)'. From the central MCP server, two arrows point downward to 'Unraid GraphQL API (Array status, disks, parity)' and 'Docker Daemon / Engine (Containers, lifecycle, log stream)'.]
- (../asserts/img/image-unraid.jpg)
-
 Communication with Unraid is handled via two primary interfaces:
 
 * **Unraid Connect GraphQL API (`unraid-api`)**: Used for array health, storage pool metrics, parity check status, and system telemetry.
