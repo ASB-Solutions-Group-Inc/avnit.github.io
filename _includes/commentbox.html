@@ -1,7 +1,9 @@
 {% if site.commentbox %}
 
     <div class="commentbox"></div>
-    <script src="https://unpkg.com/commentbox.io/dist/commentBox.min.js"></script>
-    <script>commentBox('{{ site.commentbox }}')</script>
+    <script src="https://unpkg.com/commentbox.io@2.0.3/dist/commentBox.min.js"
+            integrity="sha384-chipHb5RrX87a+NBLSCRKQEqmsL4xtzayc9Gj980Jr1I2YQ67whriEtlMjiOzZ8f"
+            crossorigin="anonymous"></script>
+    <script>commentBox({{ site.commentbox | jsonify }})</script>
 
 {% endif %}

@@ -18,13 +18,13 @@ layout: base
             {% for badge in page.gh-badge %}
               {% case badge %}
                 {% when 'star'%}
-                  <iframe src="https://ghbtns.com/github-btn.html?user={{ gh_user }}&repo={{ gh_repo }}&type=star&count=true" frameborder="0" scrolling="0" width="120px" height="20px"></iframe>
+                  <iframe src="https://ghbtns.com/github-btn.html?user={{ gh_user | url_encode }}&repo={{ gh_repo | url_encode }}&type=star&count=true" frameborder="0" scrolling="0" width="120px" height="20px" sandbox="allow-scripts allow-popups" referrerpolicy="no-referrer" title="GitHub Star Badge"></iframe>
                 {% when 'watch'%}
-                  <iframe src="https://ghbtns.com/github-btn.html?user={{ gh_user }}&repo={{ gh_repo }}&type=watch&v=2&count=true" frameborder="0" scrolling="0" width="120px" height="20px"></iframe>
+                  <iframe src="https://ghbtns.com/github-btn.html?user={{ gh_user | url_encode }}&repo={{ gh_repo | url_encode }}&type=watch&v=2&count=true" frameborder="0" scrolling="0" width="120px" height="20px" sandbox="allow-scripts allow-popups" referrerpolicy="no-referrer" title="GitHub Watch Badge"></iframe>
                 {% when 'fork'%}
-                  <iframe src="https://ghbtns.com/github-btn.html?user={{ gh_user }}&repo={{ gh_repo }}&type=fork&count=true" frameborder="0" scrolling="0" width="120px" height="20px"></iframe>
+                  <iframe src="https://ghbtns.com/github-btn.html?user={{ gh_user | url_encode }}&repo={{ gh_repo | url_encode }}&type=fork&count=true" frameborder="0" scrolling="0" width="120px" height="20px" sandbox="allow-scripts allow-popups" referrerpolicy="no-referrer" title="GitHub Fork Badge"></iframe>
                 {% when 'follow'%}
-                  <iframe src="https://ghbtns.com/github-btn.html?user={{ gh_user }}&type=follow&count=true" frameborder="0" scrolling="0" width="220px" height="20px"></iframe>
+                  <iframe src="https://ghbtns.com/github-btn.html?user={{ gh_user | url_encode }}&type=follow&count=true" frameborder="0" scrolling="0" width="220px" height="20px" sandbox="allow-scripts allow-popups" referrerpolicy="no-referrer" title="GitHub Follow Badge"></iframe>
               {% endcase %}
             {% endfor %}
           {% endif %}
@@ -47,7 +47,7 @@ layout: base
         <div class="blog-tags">
           <span>Tags:</span>
           {% for tag in page.tags %}
-            <a href="{{ '/tags' | relative_url }}#{{- tag -}}">{{- tag -}}</a>
+            <a href="{{ '/tags' | relative_url }}#{{- tag | url_encode -}}">{{- tag | escape -}}</a>
           {% endfor %}
         </div>
       {% endif %}

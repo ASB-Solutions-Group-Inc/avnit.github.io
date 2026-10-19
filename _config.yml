@@ -298,6 +298,11 @@ exclude:
   - screenshot.png
   - docs/
   - js/
+  - _posts/2026-08-14-project-context-map.md
+  - _posts/2026-08-26-project-claude-input
+  - _posts/image.png
+  - _posts/output_5_1.png
+  - _posts/output_6_1.png
 
 plugins:
   - jekyll-paginate

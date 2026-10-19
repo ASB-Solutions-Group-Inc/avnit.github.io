@@ -9,9 +9,9 @@ layout: null
     $(form).addClass('disabled');
 
     {% assign sm = site.staticman -%}
-    const endpoint = '{{ sm.endpoint }}';
-    const repository = '{{ sm.repository }}';
-    const branch = '{{ sm.branch }}';
+    const endpoint = {{ sm.endpoint | jsonify }};
+    const repository = {{ sm.repository | jsonify }};
+    const branch = {{ sm.branch | jsonify }};
     const url = endpoint + repository + '/' + branch + '/comments';
     const data = $(this).serialize();
 
