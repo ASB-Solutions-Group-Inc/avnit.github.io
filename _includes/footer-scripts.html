@@ -10,7 +10,9 @@
     {% if js contains 'jquery' %}
       <script>
         if (typeof jQuery == 'undefined') {
-          document.write('<script src="{{ js | relative_url }}"></scr' + 'ipt>');
+          const s = document.createElement('script');
+          s.src = {{ js | relative_url | jsonify }};
+          document.head.appendChild(s);
         }
       </script>
     {% else %}

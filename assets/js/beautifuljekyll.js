@@ -75,7 +75,7 @@ let BeautifulJekyllJS = {
         // if I want to do something once the image is ready: `prefetchImg.onload = function(){}`
 
         setTimeout(function(){
-          const img = $("<div></div>").addClass("big-img-transition").css("background-image", 'url(' + src + ')');
+          const img = $("<div></div>").addClass("big-img-transition").css("background-image", 'url(' + encodeURI(src) + ')');
           $(".intro-header.big-img").prepend(img);
           setTimeout(function(){ img.css("opacity", "1"); }, 50);
 
@@ -109,7 +109,7 @@ let BeautifulJekyllJS = {
   },
 
   setImg : function(src, desc) {
-    $(".intro-header.big-img").css("background-image", 'url(' + src + ')');
+    $(".intro-header.big-img").css("background-image", 'url(' + encodeURI(src) + ')');
     if (typeof desc !== typeof undefined && desc !== false) {
       $(".img-desc").text(desc).show();
     } else {
